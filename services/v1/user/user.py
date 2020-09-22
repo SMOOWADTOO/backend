@@ -1,16 +1,34 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os, shutil, time, datetime, json, pathlib, boto3, uuid
+import os, shutil, time, datetime, json, pathlib, boto3, uuid, requests
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
 from botocore.exceptions import ClientError
 from google.cloud import storage
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from oauthlib.oauth2 import WebApplicationClient
 
 app = Flask(__name__)
 
 CORS(app)
 
 # ======================================================================
+
+# ===== OpenID Configuration =====
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+
+# ===== OpenID Configuration =====
 
 # ======= AWS SETUP =======
 

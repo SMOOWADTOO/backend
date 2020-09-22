@@ -6,3 +6,4 @@ Flask-Limiter==1.4
 boto3==1.14.59
 google-cloud
 google-cloud-storage
+Flask-Login==0.5.0
