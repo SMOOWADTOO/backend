@@ -11,3 +11,8 @@ export S3_BUCKET_NAME=""
 cd "$parent_path"/services/v1/user
 pip3 install --no-cache-dir -r $parent_path/services/v1/user/requirements.txt
 python3 user.py &
+
+
+cd "$parent_path"/services/v1/product
+pip3 install --no-cache-dir -r $parent_path/services/v1/product/requirements.txt
+python3 product.py &
