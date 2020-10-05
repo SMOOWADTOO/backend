@@ -73,7 +73,12 @@ USER_TYPES = {
 
 # ====== USER TYPES =======
 
-# ====== AUTH WRAPPER =======
+# ====== AUTH HELPERS =======
+
+def encodeJWT(payload, time):
+    expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=time)
+    payload.update({"exp": expiry})
+    return jwt.encode(payload, SECRET, ALGO)
 
 def check_auth_header(f):
     @wraps(f)
@@ -115,7 +120,7 @@ def check_auth_header(f):
             
     return _verify
 
-# ====== AUTH WRAPPER =======
+# ====== AUTH HELPERS =======
 
 ########################################################################
 # User Accounts object for the users
@@ -167,11 +172,11 @@ def checkEmailExists(email, json=True):
     if user:
         if not json:
             return True, user
-        return jsonify({"type": "success", "user": user.details()}), 200
+        return jsonify({"type": "success", "user": user.user_type(), "user_exists": True}), 200
     
     if not json:
         return False, ""
-    return jsonify({"type": "error", "message": "User not found."}), 404
+    return jsonify({"type": "error", "message": "User not found.", "user_exists": False}), 404
 
 # Get user full details
 @app.route("/user", methods=['GET'])
@@ -280,18 +285,6 @@ def authenticate():
 
     return jsonify({"type": "error", "message": "Unknown error has occurred."}), 500
 
-def encodeJWT(payload, time):
-    expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=time)
-    payload.update({"exp": expiry})
-    return jwt.encode(payload, SECRET, ALGO)
-
-def isValidJWT(token):
-    try:
-        payload = jwt.decode(token, SECRET, ALGO)
-        return (True, payload)
-    except Exception as e:
-        return False, e
-
 ########################################################################
 
 class UserProfile(db.Model):
@@ -363,6 +356,20 @@ def createUserProfile(userID, firstName, lastName):
     except Exception as e:
         print(e)
         return jsonify({"type": "error", "message": "An error occurred creating the user profile.", "debug": str(e)}), 500
+
+# Get user full details
+@app.route("/user/profile/me", methods=['GET'])
+@check_auth_header
+def getFullUserProfile(user):
+    user_details = user.details()
+    userID = user_details["id"]
+
+    profile = UserProfile.query.filter_by(userID=userID).first()
+    
+    user_details.update(profile.details())
+    del user_details["userID"]
+
+    return jsonify({"type": "success", "user": user_details}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7001, debug=True)
