@@ -178,6 +178,7 @@ This function returns the following JSON response:
         "email": "er@homebiz.app",
         "id": 3,
         "type": "normal_user"
-    }
+    },
+    "user_exists": true
 }
 ```
