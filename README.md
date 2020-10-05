@@ -15,5 +15,6 @@ Dump all the `.sql` script files to the ./sqldump folder
 7. Document your RESTful API parameters using the sample in **README.md**
 8. In **Dockerfile**, please change the `user` to the name of your service.
 9. Add your service to **install_dev.sh** and **run_dev.sh** in the root folder. These two folders is to orchestrate the running of all the services at once, rather than going to every folder and running the service individually. Remember, once you've set the API keys and DB URLs, add to `gitignore`.
+10. Run **install.sh** or **install_dev.sh** on first time, or when adding new dependencies into the service. **run.sh** or **run_dev.sh** when you wanna run the service.
 
 > Let's not upload API keys into GH hahaha
