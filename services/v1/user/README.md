@@ -6,6 +6,12 @@ The user service handles everything related to users:
 1. User Login
 2. User Profile
 
+This service uses the JWT authentication flow for protected APIs. If you see the **:warning: PROTECTED API** label, include the JWT token in the response headers like below:
+
+```
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MywiZW1haWwiOiJlckBob21lYml6LmFwcCIsInR5cGUiOiJub3JtYWxfdXNlciIsInVzZXJJRCI6MywibnJpYyI6bnVsbCwiZmlyc3ROYW1lIjoiRW1tYW51ZWwiLCJsYXN0TmFtZSI6IlJheWVuZHJhIiwiYmlydGhkYXkiOm51bGwsImdlbmRlciI6bnVsbCwiZGVzY3JpcHRpb24iOm51bGwsImFkZHJlc3NMaW5lMSI6bnVsbCwiYWRkcmVzc0xpbmUyIjpudWxsLCJwb3N0YWxDb2RlIjpudWxsLCJwaG9uZU5vIjpudWxsLCJ0ZWxlZ3JhbVRva2VuIjpudWxsLCJleHAiOjE2MDE4OTUwODF9.mNRpLpezI78pcfPKv-p8gFdt_TkAY21Kfyd2gB_EJb4
+```
+
 -----------
 
 > Try to follow API best practices using nouns and not verbs (POST: /user for creating new users, GET: /user for getting user info). See more at https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design 
@@ -44,9 +50,6 @@ All service calls returns the following JSON response:
 
 > **NOTE: Boolean values accept 0 as false, and non-zero for true when inserting into the database**
 
-
-# Login
-
 ## 1.1 authenticate
 
 **Authenticates a user requesting to login**
@@ -59,8 +62,8 @@ Request sample:
 
 ```
 {
-	"email": "a@a.com",
-	"password": "sfz5466z"
+    "email": "er@homebiz.app", 
+    "password": "la_chinata"
 }
 ```
 
@@ -68,16 +71,31 @@ This function returns the following JSON response:
 
 ```
 {
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1MCwiZW1haWwiOiJhQGEuY29tIiwiZW1haWxfdmVyaWZpZWRfYXQiOm51bGwsImlzX2FkbWluIjpudWxsLCJyZW1lbWJlcl90b2tlbiI6bnVsbCwibnJpYyI6bnVsbCwiZmlyc3RfbmFtZSI6IldlaW1pbmciLCJsYXN0X25hbWUiOiJTaXR1IiwiZHJpdmluZ19saWNlbmNlX3ZhbGlkaXR5IjpudWxsLCJwcm9maWxlX3Bob3RvX3VybCI6IiIsImFkZHJlc3NfbGluZTEiOiI3IFBFTUlNUElOIERSSVZFIiwiYWRkcmVzc19saW5lMiI6IlNFQVNPTlMgVklFVyIsInBvc3RhbF9jb2RlIjoiNTc2MTUwIiwibW9iaWxlX25vIjpudWxsLCJ0ZWxlZ3JhbV90b2tlbiI6bnVsbCwiZXhwIjoxNjAxODc1NTcwfQ.v8vubk3UY_NU8W1afdDPp6DVYP_n87BFDC_UuHK5XHc",
-    "type": "success"
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MywiZW1haWwiOiJlckBob21lYml6LmFwcCIsInR5cGUiOiJub3JtYWxfdXNlciIsInVzZXJJRCI6MywibnJpYyI6bnVsbCwiZmlyc3ROYW1lIjoiRW1tYW51ZWwiLCJsYXN0TmFtZSI6IlJheWVuZHJhIiwiYmlydGhkYXkiOm51bGwsImdlbmRlciI6bnVsbCwiZGVzY3JpcHRpb24iOm51bGwsImFkZHJlc3NMaW5lMSI6bnVsbCwiYWRkcmVzc0xpbmUyIjpudWxsLCJwb3N0YWxDb2RlIjpudWxsLCJwaG9uZU5vIjpudWxsLCJ0ZWxlZ3JhbVRva2VuIjpudWxsLCJleHAiOjE2MDE4OTUwODF9.mNRpLpezI78pcfPKv-p8gFdt_TkAY21Kfyd2gB_EJb4",
+    "type": "success",
+    "user": {
+        "created": "Mon, 05 Oct 2020 05:54:04 GMT",
+        "email": "er@homebiz.app",
+        "firstName": "Emmanuel",
+        "gender": null,
+        "id": 3,
+        "lastName": "Rayendra",
+        "phoneNo": null,
+        "type": "normal_user",
+        "updated": null
+    }
 }
 ```
 
-## 1.2 createUserProfile
+> Important: Use the `token` parameter for protected APIs through the headers, e.g. `Authorization: Bearer <JWT token>`
 
-**Get user profile from specific ID**
+## 1.2 createUser
 
-**URL** `/user/profile`
+**Creates a new user using the specified `user_type` parameter.**
+
+For example, if URL is `/user/normal_user`, this function will create a user account of `userType` value `normal_user`.
+
+**URL** `/user/<string:user_type>`
 
 **Method** `POST`
 
@@ -85,10 +103,10 @@ Request sample:
 
 ```
 {
-	"first_name": "Emmanuel",
-    "last_name": "Rayendra",
-    "mobile_no": "91829191",
-    "nric": "S2710291E"
+    "email": "hs@homebiz.app", 
+    "password": "shepherdspie",
+    "firstName": "Hong Seng",
+    "lastName": "Ong"
 }
 ```
 
@@ -98,20 +116,22 @@ This function returns the following JSON response:
 {
     "type": "success",
     "user": {
-        "first_name": "Emmanuel",
-        "last_name": "Rayendra",
-        "mobile_no": "91829191",
-        "nric": "S2710291E",
-        "user_id": 4
+        "created": "Mon, 05 Oct 2020 08:41:13 GMT",
+        "email": "hs@homebiz.app",
+        "id": 18,
+        "type": "normal_user",
+        "updated": null
     }
 }
 ```
 
-## 1.3 getUserProfile
+## 1.3 getFullUserProfile
+
+### :warning: PROTECTED API
 
 **Get user profile from specific ID**
 
-**URL** `/user/profile/<int:id>`
+**URL** `/user/profile/me`
 
 **Method** `GET`
 
@@ -121,11 +141,43 @@ This function returns the following JSON response:
 {
     "type": "success",
     "user": {
-        "first_name": "Emmanuel",
-        "last_name": "Rayendra",
-        "mobile_no": "91829191",
-        "nric": "S2710291E",
-        "user_id": 4
+        "addressLine1": null,
+        "addressLine2": null,
+        "birthday": null,
+        "created": "Mon, 05 Oct 2020 05:54:04 GMT",
+        "description": null,
+        "email": "er@homebiz.app",
+        "firstName": "Emmanuel",
+        "gender": null,
+        "id": 3,
+        "lastName": "Rayendra",
+        "nric": null,
+        "phoneNo": null,
+        "postalCode": null,
+        "telegramToken": null,
+        "type": "normal_user",
+        "updated": null
+    }
+}
+```
+
+## 1.4 checkEmailExists
+
+**This function checks if the email exists in the database. You might want to use this for validating registration forms.**
+
+**URL** `/user/check/<string:email>`
+
+**Method** `GET`
+
+This function returns the following JSON response:
+
+```
+{
+    "type": "success",
+    "user": {
+        "email": "er@homebiz.app",
+        "id": 3,
+        "type": "normal_user"
     }
 }
 ```
