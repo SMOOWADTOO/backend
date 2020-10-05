@@ -57,9 +57,7 @@ All service calls returns the following JSON response:
 Request sample:
 
 ```
-{
-
-}
+http://localhost:7004/product
 ```
 
 This function returns the following JSON response:
@@ -81,16 +79,30 @@ This function returns the following JSON response:
 Request sample:
 
 ```
-{
-	"shopId": 1,
-}
+http://localhost:7004/product/1
 ```
 
 This function returns the following JSON response:
 
 ```
 {
-<!-- TODO -->
+"products": [
+    {
+        "productDesc": "Cake made from yam",
+        "productId": 1,
+        "productName": "Yam Cake",
+        "shopId": 1,
+        "unitPrice": 2
+    },
+    {
+        "productDesc": "Cake made from pandan leaf",
+        "productId": 2,
+        "productName": "Pandan Cake",
+        "shopId": 1,
+        "unitPrice": 3
+    }
+],
+"status": 200
 }
 ```
 
@@ -115,14 +127,14 @@ This function returns the following JSON response:
 
 ```
 {
-    "type": "success",
     "product": {
-        "shopId": 1,
-        "productId": 10 
-        "productName": "coffee cake",
         "productDesc": "cake made from kopi",
+        "productId": 8,
+        "productName": "coffee cake",
+        "shopId": 1,
         "unitPrice": 2.5
-    }
+    },
+    "type": "success"
 }
 ```
 Note: productId is auto-incremented

@@ -3,8 +3,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
-from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER, DOUBLE
-# import hashlib, base64, time, datetime, jwt, json, uuid, os, boto3
+from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER
+import base64, time, datetime, json, uuid, os, boto3
+import traceback
 from mimetypes import guess_extension
 from urllib.request import urlretrieve, urlcleanup
 
@@ -63,26 +64,26 @@ def unexpectedExceptionHandler(e):
 class Product(db.Model):
     __tablename__ = "product"
 
-    shop_id = db.Column(INTEGER(11), primary_key=True)
-    product_id = db.Column(INTEGER(11), primary_key=True)
-    product_name = db.Column(VARCHAR(255), nullable=False)
-    product_desc = db.Column(VARCHAR(255), nullable=False)
-    unit_price = db.Column(DOUBLE(scale=2), nullable=False)
+    shopId = db.Column(db.Integer, primary_key=True)
+    productId = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    productName = db.Column(db.String(255), nullable=False)
+    productDesc = db.Column(db.String(255), nullable=False)
+    unitPrice = db.Column(db.Float, nullable=False)
 
-    def init(self, shop_id, product_id, product_name, product_desc, unit_price):
-        self.shop_id = shop_id
-        self.product_id = product_id
-        self.product_name = product_name
-        self.product_desc = product_desc
-        self.unit_price = unit_price
+    def __init__(self, shopId, productName, productDesc, unitPrice):
+        self.shopId = shopId
+        # self.productId = productId # no need since productId is set with autoincrement=True
+        self.productName = productName
+        self.productDesc = productDesc
+        self.unitPrice = unitPrice
     
     def details(self):
         return {
-            "shop_id": self.shop_id,
-            "product_id": self.product_id,
-            "product_name": self.product_name,
-            "product_desc": self.product_desc,
-            "unit_price": self.unit_price,
+            "shopId": self.shopId,
+            "productId": self.productId,
+            "productName": self.productName,
+            "productDesc": self.productDesc,
+            "unitPrice": self.unitPrice,
         }
 
 ##########
@@ -95,7 +96,7 @@ def getAllProducts():
     try:
         return {
             'products': [
-                product.json() for product in Product.query.all()
+                product.details() for product in Product.query.all()
             ]
         }, 200
     except Exception as e:
@@ -113,7 +114,7 @@ def getProductsByShopId(shopId):
         # data = Product.query.filter_by(shopId=shopId)
         products = Product.query.filter_by(shopId=shopId)
         if len(products.all()) != 0:
-            return {"products": [product.json() for product in products], "status": 200} 
+            return {"products": [product.details() for product in products], "status": 200} 
     except Exception as e:
         print(e)
         return jsonify(
@@ -127,24 +128,25 @@ def getProductsByShopId(shopId):
 def addProduct():
     try:
         product_obj = request.get_json()
-        shop_id = product_obj["shopId"]
-        # product_id = product_obj["product_id"] # AUTO INCREMENT
-        product_desc = product_obj["productDesc"]
-        unit_price = product_obj["unitPrice"]
-        # TODO: see if putting None for product_id work or not
-        new_product = Product(shop_id, None, product_desc, unit_price)
+        shopId = product_obj["shopId"]
+        productName = product_obj["productName"]
+        productDesc = product_obj["productDesc"]
+        unitPrice = product_obj["unitPrice"]
+        
+        new_product = Product(shopId, productName, productDesc, unitPrice)
         db.session.add(new_product)
         db.session.commit()
+        return jsonify({"type": "success", "product": new_product.details()}), 201
     
     except Exception as e:
         print(e)
+        traceback.print_exc()
         return jsonify(
             {"type": "error", 
             "message": "An error occurred when adding a new product.", 
             "debug": str(e)}
         ), 500
 
-    return jsonify({"type": "success", "product": new_product.details()}), 201
 
 
 # ======================================================================
