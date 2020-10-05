@@ -1,4 +1,6 @@
-# export AWS_PROFILE=
+# ADD DB URL HERE
+export USER_DB_BASE_URL=""
+
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 alias python=python3
-python "$DIR/unknown_app.py"
+python "$DIR/user.py"
