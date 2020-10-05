@@ -26,7 +26,7 @@ CREATE TABLE `review` (
   `username` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `reviewDetail` longtext NOT NULL,
-  `rating` int(5) NOT NULL,
+  `rating` int(11) NOT NULL,
   `publishedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
