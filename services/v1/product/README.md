@@ -1,4 +1,4 @@
-# USER SERVICE
+# PRODUCT SERVICE
 ----------
 
 The user service handles everything related to products: 
