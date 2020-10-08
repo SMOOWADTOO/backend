@@ -2,3 +2,4 @@
 .DS_Store
 services/v1/product/run.sh
 services/v1/review/run.sh
+venv
