@@ -53,14 +53,14 @@ All service calls returns the following JSON response:
 
 **Get list of all shops**
 
-**URL** `/shops`
+**URL** `/shop/all`
 
 **Method** `GET`
 
 Request sample:
 
 ```
-http://localhost:7002/shops
+http://localhost:7002/shop/all
 ```
 
 This function returns the following JSON response:
@@ -155,11 +155,11 @@ This function returns the following JSON response:
 }
 ```
 
-## 1.4 Edit new shop
+## 1.4 Edit shop details
 
 **User can edit a shop details**
 
-**URL** `/shop/edit/<shopId>`
+**URL** `/shop/edit`
 
 **Method** `POST`
 Request sample:

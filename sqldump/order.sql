@@ -52,7 +52,8 @@ CREATE TABLE `orders` (
   `deliveryAddress` longtext NOT NULL,
   `completed` tinyint(1) NOT NULL DEFAULT '0',
   `paid` tinyint(1) NOT NULL DEFAULT '0',
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -60,8 +61,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`orderId`, `username`, `pickupAddress`, `deliveryAddress`, `completed`, `paid`, `createdAt`) VALUES
-(1, 'jrchew', 'Istana', 'SMU SIS', 0, 0, '2020-10-09 07:35:22'),
-(2, 'qijintay', 'SMU SIS ', 'SMU SIS', 0, 0, '2020-10-09 07:40:00');
+(1, 'jrchew', 'Istana', 'SMU SIS', 0, 0, '2020-10-09 07:35:22', '2020-10-09 18:05:28'),
+(2, 'qijintay', 'SMU SIS ', 'SMU SIS', 0, 0, '2020-10-09 07:40:00', '2020-10-09 18:05:28');
 
 --
 -- Indexes for dumped tables
