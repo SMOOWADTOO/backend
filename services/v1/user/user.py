@@ -256,32 +256,35 @@ def createUser(user_type):
 @app.route("/user/authentication", methods=['POST'])
 def authenticate():
     data = request.get_json()
-    user = checkEmailExists(data['email'])
+    try:
+        user = checkEmailExists(data['email'])
     
-    if user[1] == 200:
-        password_hashed = hashlib.md5(data['password'].encode('utf-8')).hexdigest()
-        db_user = UserLogin.query.filter_by(email=data['email'], password=password_hashed).first()
-        
-        if db_user:
-            db_profile = UserProfile.query.filter_by(userID=db_user.id).first()
-            payload = db_user.details()
-            del payload['created']
-            del payload['updated']
-
-            profile_payload = db_profile.details()
-            payload.update(profile_payload)
-
-            minimal_profile = db_profile.minimal_details()
-            minimal_profile.update(db_user.details())
-            del minimal_profile["userID"]
-
-            access_jwt = encodeJWT(payload, TIME_LIMIT).decode('utf-8')
+        if user[1] == 200:
+            password_hashed = hashlib.md5(data['password'].encode('utf-8')).hexdigest()
+            db_user = UserLogin.query.filter_by(email=data['email'], password=password_hashed).first()
             
-            return jsonify({"type": "success", "token": access_jwt, "user": minimal_profile}), 200
+            if db_user:
+                db_profile = UserProfile.query.filter_by(userID=db_user.id).first()
+                payload = db_user.details()
+                del payload['created']
+                del payload['updated']
+
+                profile_payload = db_profile.details()
+                payload.update(profile_payload)
+
+                minimal_profile = db_profile.minimal_details()
+                minimal_profile.update(db_user.details())
+                del minimal_profile["userID"]
+
+                access_jwt = encodeJWT(payload, TIME_LIMIT).decode('utf-8')
+                
+                return jsonify({"type": "success", "token": access_jwt, "user": minimal_profile}), 200
+            else:
+                return jsonify({"type": "error", "message": "Password incorrect."}), 403
         else:
-            return jsonify({"type": "error", "message": "Password incorrect."}), 403
-    else:
-        return jsonify({"type": "error", "message": "Login email not found."}), 404
+            return jsonify({"type": "error", "message": "Login email not found."}), 404
+    except Exception as e:
+        return jsonify({"type": "error", "message": "Database might be offline.", "debug": str(e)}), 500
 
     return jsonify({"type": "error", "message": "Unknown error has occurred."}), 500
 
