@@ -50,6 +50,17 @@ All service calls returns the following JSON response:
 
 > **NOTE: Boolean values accept 0 as false, and non-zero for true when inserting into the database**
 
+## User Types
+
+```
+USER_TYPES = {
+    "normal_user": 0, 
+    "business_employee": 1, 
+    "business_admin": 2, 
+    "system_admin": 3
+}
+```
+
 ## 1.1 authenticate
 
 **Authenticates a user requesting to login**
