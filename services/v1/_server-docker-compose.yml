@@ -1,0 +1,54 @@
+version: '3.7'
+
+networks:
+    homebiz-net:
+        driver: bridge
+
+services:
+
+    #######################################
+    # Backend Services
+    #######################################
+
+    user:
+        image: asia.gcr.io/wad2-286702/homebiz-user
+        container_name: user
+        restart: always
+        ports: 
+        - 7001:7001
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
+    #######################################
+    # Frontend Services
+    #######################################
+    ui: # service name
+        image: asia.gcr.io/wad2-286702/homebiz-ui
+        container_name: ui
+        restart: always
+        ports:
+        - 3000:3000
+        networks:
+        - homebiz-net
+        command: "npm run start"
+
+    # reverse proxy
+    nginx:
+        image: linuxserver/nginx
+        container_name: nginx
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Singapore
+        volumes:
+            - /config:/config
+        ports:
+            - 80:80
+            - 443:443
+        restart: unless-stopped
+        networks:
+        - homebiz-net
+        depends_on:
+        - user

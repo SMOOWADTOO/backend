@@ -16,9 +16,10 @@ SECRET = app.secret_key
 TIME_LIMIT = 10800
 ALGO = "HS256"
 
-DB_BASE_URL = os.environ["USER_DB_BASE_URL"]
+DB_BASE_URL = os.environ["DB_BASE_URL"]
+DB_NAME = os.environ["USER_DB_NAME"]
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_BASE_URL + '/homebiz_user'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_BASE_URL + "/" + DB_NAME
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_SIZE'] = 100
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 280

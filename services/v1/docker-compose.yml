@@ -1,0 +1,21 @@
+version: '3.7'
+
+networks:
+    homebiz-net:
+        driver: bridge
+
+services:
+
+    #######################################
+    # Backend Services
+    #######################################
+
+    user:
+        build: ./user
+        image: asia.gcr.io/wad2-286702/homebiz-user
+        container_name: user
+        restart: always
+        ports: 
+        - 7001:7001
+        networks:
+        - homebiz-net
