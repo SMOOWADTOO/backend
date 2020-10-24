@@ -17,4 +17,14 @@ Dump all the `.sql` script files to the ./sqldump folder
 9. Add your service to **install_dev.sh** and **run_dev.sh** in the root folder. These two folders is to orchestrate the running of all the services at once, rather than going to every folder and running the service individually. Remember, once you've set the API keys and DB URLs, add to `gitignore`.
 10. Run **install.sh** or **install_dev.sh** on first time, or when adding new dependencies into the service. **run.sh** or **run_dev.sh** when you wanna run the service.
 
+## Services list
+
+**7001** `user`
+**7002** `shop`
+**7003** `order`
+**7004** `product`
+**7005** `review`
+**7006** `payment`
+**7009** `search`
+
 > Let's not upload API keys into GH hahaha
