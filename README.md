@@ -20,11 +20,17 @@ Dump all the `.sql` script files to the ./sqldump folder
 ## Services list
 
 **7001** `user`
+
 **7002** `shop`
+
 **7003** `order`
+
 **7004** `product`
+
 **7005** `review`
+
 **7006** `payment`
+
 **7009** `search`
 
 > Let's not upload API keys into GH hahaha
