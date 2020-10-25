@@ -3,3 +3,4 @@
 services/v1/product/run.sh
 services/v1/review/run.sh
 venv
+services/v1/payment/run.sh
