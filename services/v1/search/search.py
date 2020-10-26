@@ -1,36 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
-from sqlalchemy.dialects.mysql import BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME
-import base64, time, datetime, json, uuid, os, boto3
-from mimetypes import guess_extension
-from urllib.request import urlretrieve, urlcleanup
+import json, os
 import requests
 
 app = Flask(__name__)
 
-# DB_BASE_URL = os.environ["USER_DB_BASE_URL"]
-IPADDR = os.environ["HOMEBIZ_DEPLOYED_IPADDR"]
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = DB_BASE_URL + '/homebiz_user'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_POOL_SIZE'] = 100
-# app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
- 
-# db = SQLAlchemy(app)
+BASEURL = os.environ["HOMEBIZ_URL"]
 CORS(app)
-
-# ======================================================================
-
-# ======= AWS SETUP =======
-
-AWS_S3_CLIENT = boto3.client("s3")
-AWS_S3_RESOURCE = boto3.resource("s3")
-BUCKET_NAME = ""
-
-# ======= AWS SETUP =======
 
 # ======================================================================
 
@@ -66,8 +44,7 @@ def unexpectedExceptionHandler(e):
 @app.route("/search/product/<string:term>", methods=['GET'])
 def searchProduct(term):
     result = []
-    port = 7004
-    url = IPADDR + str(port) + "/product"
+    url = BASEURL + "/product"
     data = requests.get(url).json()
     products = data['products']
     for product in products:
@@ -80,8 +57,7 @@ def searchProduct(term):
 @app.route("/search/shop/<string:term>", methods=['GET'])
 def searchShop(term):
     result = []
-    port = 7002
-    url = IPADDR + str(port) + "/shop/all"
+    url = BASEURL + "/shop/all"
     data = requests.get(url).json()
     shops = data['shops']
     for shop in shops:
