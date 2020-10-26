@@ -132,13 +132,15 @@ class UserLogin(db.Model):
 
     id = db.Column(BIGINT(20), primary_key=True)
     email = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(16), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     type = db.Column(TINYINT(1), nullable=True)
     created = db.Column(TIMESTAMP(), nullable=True)
     updated = db.Column(TIMESTAMP(), nullable=True)
 
-    def init(self, email, password):
+    def init(self, username, email, password):
         self.email = email
+        self.username = username
         self.password = password
 
     def details(self):
@@ -148,6 +150,7 @@ class UserLogin(db.Model):
                 type_name = user_type
 
         return {"id": self.id, 
+        "username": self.username,
         "email": self.email, 
         "type": type_name, 
         "created": self.created, 
@@ -178,6 +181,18 @@ def checkEmailExists(email, json=True):
     if not json:
         return False, ""
     return jsonify({"type": "error", "message": "User not found.", "user_exists": False}), 404
+
+@app.route("/user/check/username/<string:username>", methods=['GET'])
+def checkUsernameExists(username, json=True):
+    user = UserLogin.query.filter_by(username=username).first()
+    if user:
+        if not json:
+            return True, user
+        return jsonify({"type": "success", "user": user.user_type(), "username_exists": True}), 200
+    
+    if not json:
+        return False, ""
+    return jsonify({"type": "error", "message": "User not found.", "username_exists": False}), 404
 
 # Get user full details
 @app.route("/user", methods=['GET'])

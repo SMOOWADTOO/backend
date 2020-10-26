@@ -21,9 +21,10 @@ USE `homebiz_user`;
 --
 -- Table structure for table `user_login`
 --
-
+DROP TABLE IF EXISTS `user_login`;
 CREATE TABLE `user_login` (
   `id` bigint(20) NOT NULL,
+  `username` varchar(16) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `type` tinyint(1) DEFAULT NULL,
@@ -35,22 +36,15 @@ CREATE TABLE `user_login` (
 -- Dumping data for table `user_login`
 --
 
-INSERT INTO `user_login` (`id`, `email`, `password`, `type`, `created`, `updated`) VALUES
-(3, 'er@homebiz.app', '708d3812b3e90cbc4b0751ec1afab7b7', 0, '2020-10-04 21:54:04', NULL),
-(4, 'jr@homebiz.app', 'de2c9f8839385b3fcf939952de28bb01', 0, '2020-10-04 21:58:38', NULL),
-(5, 'vv@homebiz.app', '574732e83b6fa9736aedcce9bf644854', 0, '2020-10-04 22:01:49', NULL),
-(6, 'yx@homebiz.app', '8f4815062be162a55ec2cd1cff8a0d3c', 0, '2020-10-04 22:06:06', NULL),
-(7, 'qj@homebiz.app', 'fb2dc60361c7a51d48ffaf30a05ac4d0', 0, '2020-10-04 22:06:39', NULL),
-(8, 'boss@homebiz.app', 'f57611add43f15fbaa6bd04331da3019', 3, '2020-10-04 22:10:13', NULL),
-(9, 'hello@songla.com', 'c8c6b8378b28e605be4a86420e097082', 2, '2020-10-04 22:11:49', NULL),
-(18, 'hs@homebiz.app', 'a3ec33759a997a9bb6489846ddc81081', 0, '2020-10-05 00:41:13', NULL);
+INSERT INTO `user_login` VALUES (3,'theodorayy','er@homebiz.app','708d3812b3e90cbc4b0751ec1afab7b7',0,'2020-10-04 21:54:04','2020-10-26 09:53:59'),(4,'jrchew','jr@homebiz.app','de2c9f8839385b3fcf939952de28bb01',0,'2020-10-04 21:58:38','2020-10-26 09:53:59'),(5,'vivo','vv@homebiz.app','574732e83b6fa9736aedcce9bf644854',0,'2020-10-04 22:01:49','2020-10-26 09:53:59'),(6,'youxuan','yx@homebiz.app','8f4815062be162a55ec2cd1cff8a0d3c',0,'2020-10-04 22:06:06','2020-10-26 09:53:59'),(7,'qjtay','qj@homebiz.app','fb2dc60361c7a51d48ffaf30a05ac4d0',0,'2020-10-04 22:06:39','2020-10-26 09:53:59'),(8,'bossman','boss@homebiz.app','f57611add43f15fbaa6bd04331da3019',3,'2020-10-04 22:10:13','2020-10-26 09:53:59'),(9,'songla','hello@songla.com','c8c6b8378b28e605be4a86420e097082',2,'2020-10-04 22:11:49','2020-10-26 09:53:59'),(18,'hsong','hs@homebiz.app','a3ec33759a997a9bb6489846ddc81081',0,'2020-10-05 00:41:13','2020-10-26 09:53:59');
+
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `user_profile`
 --
-
+DROP TABLE IF EXISTS `user_profile`;
 CREATE TABLE `user_profile` (
   `userID` bigint(20) NOT NULL,
   `nric` varchar(10) DEFAULT NULL,
