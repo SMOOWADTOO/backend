@@ -8,3 +8,4 @@ docker push asia.gcr.io/wad2-286702/homebiz-search
 docker push asia.gcr.io/wad2-286702/homebiz-order
 docker push asia.gcr.io/wad2-286702/homebiz-product
 docker push asia.gcr.io/wad2-286702/homebiz-review
+docker push asia.gcr.io/wad2-286702/homebiz-notification

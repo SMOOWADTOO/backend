@@ -70,6 +70,16 @@ services:
         networks:
         - homebiz-net
 
+    notification:
+        build: ./notification
+        image: asia.gcr.io/wad2-286702/homebiz-notification
+        container_name: notification
+        restart: always
+        ports: 
+        - 7007:7007
+        networks:
+        - homebiz-net
+
     search:
         build: ./search
         image: asia.gcr.io/wad2-286702/homebiz-search

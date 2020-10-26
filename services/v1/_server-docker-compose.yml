@@ -87,6 +87,17 @@ services:
         env_file:
         - ./env/.env
 
+    notification:
+        image: asia.gcr.io/wad2-286702/homebiz-notification
+        container_name: notification
+        restart: always
+        ports: 
+        - 7007:7007
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
     #######################################
     # Frontend Services
     #######################################

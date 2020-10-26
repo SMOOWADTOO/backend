@@ -2,31 +2,17 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
-from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER
-import base64, time, datetime, json, uuid, os, boto3
-import traceback
-from mimetypes import guess_extension
-from urllib.request import urlretrieve, urlcleanup
-
+import base64, time, datetime, json, os, traceback
 from mailjet_rest import Client
-api_key = 'd40aa83b8cef8702e46e989be6a4a4a3'
-api_secret = '475d12e035aa2552b5472faca6df8fe8'
-mailjet = Client(auth=(api_key, api_secret), version='v3.1')
 
+API_KEY = os.environ["MAILJET_API_KEY"]
+API_SECRET = os.environ["MAILJET_API_SECRET"]
+
+MAILJET = Client(auth=(API_KEY, API_SECRET), version='v3.1')
 
 app = Flask(__name__)
 
 CORS(app)
-
-# ======================================================================
-
-# ======= AWS SETUP =======
-
-AWS_S3_CLIENT = boto3.client("s3")
-AWS_S3_RESOURCE = boto3.resource("s3")
-BUCKET_NAME = ""
-
-# ======= AWS SETUP =======
 
 # ======================================================================
 
@@ -54,44 +40,48 @@ def unexpectedExceptionHandler(e):
 
 # ====== API SETUP ======
 
+@app.route("/notification/email", methods=["POST"])
 def send_email():
-    message = {
-        'email': 'ptvvo.2018@sis.smu.edu.sg',
-        'name': 'Vi',
-        'orderId': '1',
-        'productList': 'Toothbrush, Yam cake'
-    }
-    email = message['email']
-    name = message['name']
-    orderId = message['orderId']
-    productList = message['productList']
+    message = request.get_json()
+    try:
+        email = message['email']
+        firstName = message['firstName']
+        lastName = message['lastName']
+        orderId = message['orderId']
+        productList = message['productList']
 
-    data = {
-    'Messages': [
-        {
-        "From": {
-            "Email": "ptvvo.2018@sis.smu.edu.sg",
-            "Name": "CasaFair"
-        },
-        "To": [
-            {
-            "Email": "ptvvo.2018@sis.smu.edu.sg",
-            "Name": "Vi"
-            }
-        ],
-        "Subject": "Order Confirmation",
-        "TextPart": "My first Mailjet email",
-        "HTMLPart": "Hi, " + name + ". Your Order Id is " + orderId + ". You have bought " + productList
-        
+        data = {
+            'Messages': [
+                {
+                "From": {
+                    "Email": "noreply@casafair.org",
+                    "Name": "Casafair Notifications"
+                },
+                "To": [
+                    {
+                    "Email": email,
+                    "Name": firstName + " " + lastName
+                    }
+                ],
+                "Subject": "Casafair Confirmation: Order #" + orderId,
+                "TextPart": "My first Mailjet email",
+                "HTMLPart": "Hi there, " + firstName + ". Your Order Id is " + orderId + ". You have bought " + productList
+                
+                }
+            ]
         }
-    ]
-    }
-    result = mailjet.send.create(data=data)
-    print (result.status_code)
-    print (result.json())
+        result = MAILJET.send.create(data=data)
+        return jsonify({"type": "success", "message": "Successfully sent an email"}), 200
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred sending the notification.",
+            "debug": str(e)}
+        ), 500
 
 # ======================================================================
 
 if __name__ == '__main__':
-    print("This is " + os.path.basename(__file__) + ": sending an email...")
-    send_email()
+    app.run(host='0.0.0.0', port=7007, debug=True)

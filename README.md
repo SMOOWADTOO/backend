@@ -31,6 +31,8 @@ Dump all the `.sql` script files to the ./sqldump folder
 
 **7006** `payment`
 
+**7007** `notification`
+
 **7009** `search`
 
 > Let's not upload API keys into GH hahaha
