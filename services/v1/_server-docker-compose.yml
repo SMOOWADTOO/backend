@@ -32,6 +32,15 @@ services:
         env_file:
         - ./env/.env
 
+    search:
+        image: asia.gcr.io/wad2-286702/homebiz-search
+        container_name: search
+        restart: always
+        ports: 
+        - 7009:7009
+        networks:
+        - homebiz-net
+
     #######################################
     # Frontend Services
     #######################################

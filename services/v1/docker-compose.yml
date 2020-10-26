@@ -29,3 +29,13 @@ services:
         - 7006:7006
         networks:
         - homebiz-net
+
+    search:
+        build: ./search
+        image: asia.gcr.io/wad2-286702/homebiz-search
+        container_name: search
+        restart: always
+        ports: 
+        - 7009:7009
+        networks:
+        - homebiz-net
