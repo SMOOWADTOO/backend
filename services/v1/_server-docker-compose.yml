@@ -51,6 +51,41 @@ services:
         - 7009:7009
         networks:
         - homebiz-net
+        env_file:
+        - ./env/.env
+
+    order:
+        image: asia.gcr.io/wad2-286702/homebiz-order
+        container_name: order
+        restart: always
+        ports: 
+        - 7003:7003
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
+    product:
+        image: asia.gcr.io/wad2-286702/homebiz-product
+        container_name: product
+        restart: always
+        ports: 
+        - 7004:7004
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
+    review:
+        image: asia.gcr.io/wad2-286702/homebiz-review
+        container_name: review
+        restart: always
+        ports: 
+        - 7005:7005
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
 
     #######################################
     # Frontend Services

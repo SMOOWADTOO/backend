@@ -30,6 +30,36 @@ services:
         networks:
         - homebiz-net
 
+    order:
+        build: ./order
+        image: asia.gcr.io/wad2-286702/homebiz-order
+        container_name: order
+        restart: always
+        ports: 
+        - 7003:7003
+        networks:
+        - homebiz-net
+
+    product:
+        build: ./product
+        image: asia.gcr.io/wad2-286702/homebiz-product
+        container_name: product
+        restart: always
+        ports: 
+        - 7004:7004
+        networks:
+        - homebiz-net
+
+    review:
+        build: ./review
+        image: asia.gcr.io/wad2-286702/homebiz-review
+        container_name: review
+        restart: always
+        ports: 
+        - 7005:7005
+        networks:
+        - homebiz-net
+
     payment:
         build: ./payment
         image: asia.gcr.io/wad2-286702/homebiz-payment
