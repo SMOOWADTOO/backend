@@ -21,6 +21,17 @@ services:
         env_file:
         - ./env/.env
 
+    payment:
+        image: asia.gcr.io/wad2-286702/homebiz-payment
+        container_name: payment
+        restart: always
+        ports: 
+        - 7006:7006
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
     #######################################
     # Frontend Services
     #######################################
@@ -36,19 +47,22 @@ services:
 
     # reverse proxy
     nginx:
-        image: linuxserver/nginx
+        image: linuxserver/swag
         container_name: nginx
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Asia/Singapore
-        volumes:
-            - /config:/config
         ports:
-            - 80:80
-            - 443:443
-        restart: unless-stopped
+        - 80:80
+        - 443:443
+        volumes:
+        - ./config/letsencrypt:/config
+        environment:
+        - EMAIL=emmanuelr.2018@smu.edu.sg
+        - URL=casafair.org
+        - SUBDOMAINS=www
+        - VALIDATION=http
+        - TZ=Asia/Singapore
+        - PUID=1000
+        - PGID=1000
         networks:
         - homebiz-net
         depends_on:
-        - user
+        - ui

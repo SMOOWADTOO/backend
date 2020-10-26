@@ -19,3 +19,13 @@ services:
         - 7001:7001
         networks:
         - homebiz-net
+
+    payment:
+        build: ./payment
+        image: asia.gcr.io/wad2-286702/homebiz-payment
+        container_name: payment
+        restart: always
+        ports: 
+        - 7006:7006
+        networks:
+        - homebiz-net
