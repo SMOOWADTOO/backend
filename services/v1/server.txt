@@ -3,43 +3,43 @@
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/user/ {
-                proxy_pass http://user:7001/user/;
+        location /api/user {
+                proxy_pass http://user:7001/user;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/payment/ {
-                proxy_pass http://payment:7006/payment/;
+        location /api/payment {
+                proxy_pass http://payment:7006/payment;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/search/ {
-                proxy_pass http://search:7009/search/;
+        location /api/search {
+                proxy_pass http://search:7009/search;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/shop/ {
-                proxy_pass http://shop:7002/shop/;
+        location /api/shop {
+                proxy_pass http://shop:7002/shop;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/order/ {
-                proxy_pass http://order:7003/order/;
+        location /api/order {
+                proxy_pass http://order:7003/order;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/product/ {
-                proxy_pass http://product:7004/product/;
+        location /api/product {
+                proxy_pass http://product:7004/product;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/review/ {
-                proxy_pass http://review:7005/review/;
+        location /api/review {
+                proxy_pass http://review:7005/review;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
-        location /api/notification/ {
-                proxy_pass http://review:7007/notification/;
+        location /api/notification {
+                proxy_pass http://review:7007/notification;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }

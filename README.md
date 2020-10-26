@@ -19,20 +19,33 @@ Dump all the `.sql` script files to the ./sqldump folder
 
 ## Services list
 
-**7001** `user`
+**7001** `user`: [https://www.casafair.org/api/user](https://www.casafair.org/api/user)
 
-**7002** `shop`
+**7002** `shop`: [https://www.casafair.org/api/shop](https://www.casafair.org/api/shop)
 
-**7003** `order`
+**7003** `order`: [https://www.casafair.org/api/order](https://www.casafair.org/api/order)
 
-**7004** `product`
+**7004** `product`: [https://www.casafair.org/api/product](https://www.casafair.org/api/product)
 
-**7005** `review`
+**7005** `review`: [https://www.casafair.org/api/review](https://www.casafair.org/api/review)
 
-**7006** `payment`
+**7006** `payment`: [https://www.casafair.org/api/payment](https://www.casafair.org/api/payment)
 
-**7007** `notification`
+**7007** `notification`: [https://www.casafair.org/api/notification](https://www.casafair.org/api/notification)
 
-**7009** `search`
+**7009** `search`: [https://www.casafair.org/api/search](https://www.casafair.org/api/search)
 
 > Let's not upload API keys into GH hahaha
+
+## Running locally
+
+```
+# Running for the first time
+sh install_dev.sh
+
+# Subsequent times
+sh run_dev.sh
+
+# When you wanna call it a day
+sh stop_dev.sh
+```
