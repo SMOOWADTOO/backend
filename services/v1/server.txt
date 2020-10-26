@@ -24,17 +24,17 @@
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
         location /api/order/ {
-                proxy_pass http://order:7002/order/;
+                proxy_pass http://order:7003/order/;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
         location /api/product/ {
-                proxy_pass http://product:7002/product/;
+                proxy_pass http://product:7004/product/;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
         location /api/review/ {
-                proxy_pass http://review:7002/review/;
+                proxy_pass http://review:7005/review/;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
