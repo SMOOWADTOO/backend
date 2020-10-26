@@ -20,6 +20,16 @@ services:
         networks:
         - homebiz-net
 
+    shop:
+        build: ./shop
+        image: asia.gcr.io/wad2-286702/homebiz-shop
+        container_name: shop
+        restart: always
+        ports: 
+        - 7002:7002
+        networks:
+        - homebiz-net
+
     payment:
         build: ./payment
         image: asia.gcr.io/wad2-286702/homebiz-payment

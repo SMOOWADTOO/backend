@@ -9,9 +9,10 @@ import traceback
 
 app = Flask(__name__)
 
-DB_BASE_URL = os.environ["SHOP_DB_BASE_URL"]
+DB_BASE_URL = os.environ["DB_BASE_URL"]
+DB_NAME = os.environ["USER_DB_NAME"]
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_BASE_URL + '/shop'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_BASE_URL + "/" + DB_NAME
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_SIZE'] = 100
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
