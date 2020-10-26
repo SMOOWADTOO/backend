@@ -60,7 +60,7 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`orderId`, `username`, `pickupAddress`, `deliveryAddress`, `completed`, `paid`, `createdAt`) VALUES
+INSERT INTO `orders` (`orderId`, `username`, `pickupAddress`, `deliveryAddress`, `completed`, `paid`, `createdAt`, `updatedAt`) VALUES
 (1, 'jrchew', 'Istana', 'SMU SIS', 0, 0, '2020-10-09 07:35:22', '2020-10-09 18:05:28'),
 (2, 'qijintay', 'SMU SIS ', 'SMU SIS', 0, 0, '2020-10-09 07:40:00', '2020-10-09 18:05:28');
 
