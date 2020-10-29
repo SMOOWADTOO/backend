@@ -209,6 +209,14 @@ def findUserByID(id):
         return jsonify({"type": "success", "user": user.details()}), 200
     return jsonify({"type": "error", "message": "User not found."}), 404
 
+# Find User by username
+@app.route("/user/username/<string:username>", methods=['GET'])
+def findUserByUsername(username):
+    user = UserLogin.query.filter_by(username=username).first()
+    if user:
+        return jsonify({"type": "success", "user": user.details()}), 200
+    return jsonify({"type": "error", "message": "User not found."}), 404
+
 # Create a new User
 @app.route("/user/<string:user_type>", methods=['POST'])
 def createUser(user_type):
@@ -353,7 +361,8 @@ class UserProfile(db.Model):
             "firstName": self.firstName,
             "lastName": self.lastName,
             "gender": self.gender,
-            "phoneNo": self.phoneNo
+            "phoneNo": self.phoneNo,
+            "description": self.description
         }
 
 ##########
@@ -389,6 +398,14 @@ def getFullUserProfile(user):
     del user_details["userID"]
 
     return jsonify({"type": "success", "user": user_details}), 200
+
+# Find user profile by username
+@app.route("/user/profile/<int:userID>", methods=['GET'])
+def findProfileByUserID(userID):
+    user = UserProfile.query.filter_by(userID=userID).first()
+    if user:
+        return jsonify({"type": "success", "user_profile": user.details()}), 200
+    return jsonify({"type": "error", "message": "User profile not found."}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7001, debug=True)
