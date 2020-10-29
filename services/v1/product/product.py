@@ -83,13 +83,12 @@ class Product(db.Model):
 @app.route("/product", methods=['GET'])
 def getAllProducts():
     try:
-        return {
+        return jsonify({
             'products': [
                 product.details() for product in Product.query.all()
             ]
-        }, 200
+        }), 200
     except Exception as e:
-        print(e)
         return jsonify(
             {"type": "error", 
             "message": "An error occurred when getting all products.", 
@@ -97,18 +96,33 @@ def getAllProducts():
         ), 500
 
 # Get products by shop id
-@app.route("/product/<string:shopId>", methods=['GET'])
+@app.route("/product/by_store/<string:shopId>", methods=['GET'])
 def getProductsByShopId(shopId):
     try:
         # data = Product.query.filter_by(shopId=shopId)
         products = Product.query.filter_by(shopId=shopId)
         if len(products.all()) != 0:
-            return {"products": [product.details() for product in products], "status": 200} 
+            return jsonify({"products": [product.details() for product in products], "type": "success"}), 200
     except Exception as e:
         print(e)
         return jsonify(
             {"type": "error", 
             "message": "An error occurred when getting products by shop ID.", 
+            "debug": str(e)}
+        ), 500
+
+# Get products by product id
+@app.route("/product/<string:productID>", methods=['GET'])
+def getProductByID(productID):
+    try:
+        # data = Product.query.filter_by(shopId=shopId)
+        product = Product.query.filter_by(productId=productID).first()
+        return jsonify({"product": product.details(), "type": "success"}), 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred when getting products by Product ID.", 
             "debug": str(e)}
         ), 500
 
