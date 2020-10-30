@@ -25,7 +25,7 @@ CORS(app)
 # ====== API SETUP ======
 
 # Rate limiter to prevent abuse and runaway Cloud usage; per IP Address
-limiter = Limiter(app, key_func=get_ipaddr, default_limits=["10 per minute", "100 per hour", "300 per day"])
+limiter = Limiter(app, key_func=get_ipaddr, default_limits=["50 per minute", "1000 per hour", "3000 per day"])
 
 # Default error handling messages
 @app.errorhandler(404)
