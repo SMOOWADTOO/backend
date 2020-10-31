@@ -15,13 +15,16 @@ API_KEYS = ""
 
 @app.route("/general/map/address/<string:postal_code>")
 def getAddress(postal_code):
-    url = "https://developers.onemap.sg/commonapi/search?searchVal=" + postal_code + "&returnGeom=Y&getAddrDetails=Y"
-    result = requests.get(url).json()
-    if result["found"] == 0:
-        return jsonify({"message": "Not found!"}), 404
-    else:
-        address = result["results"][0]
-        return address
+    try:
+        url = "https://developers.onemap.sg/commonapi/search?searchVal=" + postal_code + "&returnGeom=Y&getAddrDetails=Y"
+        result = requests.get(url).json()
+        if result["found"] == 0:
+            return jsonify({"message": "Not found!"}), 404
+        else:
+            address = result["results"][0]
+            return jsonify({"address": address, "type": "success"}), 200
+    except Exception as e:
+        return jsonify({"debug": str(e), "type": "success", "message": "Unable to fetch address from API due to an internal error."}), 200
 
 
 # Rename of .py files easily
