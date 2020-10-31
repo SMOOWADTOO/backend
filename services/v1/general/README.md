@@ -1,11 +1,11 @@
 # GENERAL SERVICE
-----------
 
-The general service handles everything related to external API interfaces
+The general service handles everything related to external API interfaces.
 
 -----------
 
 > Try to follow API best practices using nouns and not verbs (POST: /user for creating new users, GET: /user for getting user info). See more at https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design 
+
 
 **Port** `7008`
 
@@ -40,17 +40,6 @@ All service calls returns the following JSON response:
 ```
 
 > **NOTE: Boolean values accept 0 as false, and non-zero for true when inserting into the database**
-
-## User Types
-
-```
-USER_TYPES = {
-    "normal_user": 0, 
-    "business_employee": 1, 
-    "business_admin": 2, 
-    "system_admin": 3
-}
-```
 
 ## 1.1 getAddress
 
