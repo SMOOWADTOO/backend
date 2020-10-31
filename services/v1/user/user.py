@@ -437,7 +437,7 @@ def updateUserProfile(user):
             #         # filename = uploadProfilePhoto(data[key], user_id, old_photo)
             #         setattr(user, "profilePhotoURL", filename)
             # else:
-                setattr(user, key, data[key])
+            setattr(user, key, data[key])
         
         try:
             db.session.commit()
