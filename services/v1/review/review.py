@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
 from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER
-import base64, time, datetime, json, uuid, os, boto3
+import base64, time, datetime, json, uuid, os
 import traceback
 from mimetypes import guess_extension
 from urllib.request import urlretrieve, urlcleanup
