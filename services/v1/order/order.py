@@ -179,6 +179,7 @@ def getOrderByOrderId(orderId):
 @app.route("/order/user/<string:username>", methods=['GET'])
 def getOrderByUser(username):
     result = {}
+    result['orders'] = []
     try:
         order = Order.query.filter_by(username=username).first()
         if order:
@@ -191,7 +192,7 @@ def getOrderByUser(username):
                 od.append(orderDetail.details())
             data['order_details'] = od
             data['total'] = total
-            result['order'] = data
+            result['orders'].append(data)
             result['type'] = 'success'
             return result, 200
         return {
