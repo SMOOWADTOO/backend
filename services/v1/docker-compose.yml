@@ -80,6 +80,16 @@ services:
         networks:
         - homebiz-net
 
+    general:
+        build: ./general
+        image: asia.gcr.io/wad2-286702/homebiz-general
+        container_name: general
+        restart: always
+        ports: 
+        - 7008:7008
+        networks:
+        - homebiz-net
+
     search:
         build: ./search
         image: asia.gcr.io/wad2-286702/homebiz-search

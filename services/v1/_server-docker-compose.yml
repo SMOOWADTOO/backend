@@ -98,6 +98,17 @@ services:
         env_file:
         - ./env/.env
 
+    general:
+        image: asia.gcr.io/wad2-286702/homebiz-general
+        container_name: general
+        restart: always
+        ports:
+        - 7008:7008
+        networks:
+        - homebiz-net
+        env_file:
+        - ./env/.env
+
     #######################################
     # Frontend Services
     #######################################
