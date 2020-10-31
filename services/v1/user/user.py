@@ -85,7 +85,6 @@ def checkAuthHeader(f):
     @wraps(f)
     def _verify(*args, **kwargs):
         auth_headers = request.headers.get("Authorization", "").split()
-        print(auth_headers)
 
         invalid_msg = {
             "type": "error",
@@ -410,16 +409,17 @@ def findProfileByUserID(userID):
 
 # update UserProfile by ID
 # used by Account Settings page
-@app.route("/user/profile", methods=['PUT'])
+@app.route("/user/profile", methods=['POST'])
 @checkAuthHeader
 def updateUserProfile(user):
     user_details = user.details()
     userID = user_details["id"]
     
     user = UserProfile.query.filter_by(userID=userID).first()
+
     if user:
         data = request.get_json()
-        
+
         ts = time.gmtime()
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S', ts)
         data.update({"updated": timestamp})
@@ -428,19 +428,20 @@ def updateUserProfile(user):
             if key == "birthday":
                 data[key] = datetime.datetime.strptime(data[key], "%Y-%m-%dT%H:%M:%S.%fZ")
             
-            # profile photo
+            #profile photo
             # if key == "profilePhotoFile":
             #     if data["profilePhotoFile"] != "":
             #         old_photo = user.profilePhotoURL
             #         if old_photo == None:
             #             old_photo = ""
-            #         filename = uploadProfilePhoto(data[key], user_id, old_photo)
+            #         # filename = uploadProfilePhoto(data[key], user_id, old_photo)
             #         setattr(user, "profilePhotoURL", filename)
             # else:
-            #     setattr(user, key, data[key])
+                setattr(user, key, data[key])
         
         try:
             db.session.commit()
+            return jsonify({"type": "success", "message": "Successfully updated"}), 201
         except Exception as e:
             reason = str(e)
             return jsonify({"type": "error", "message": "An error occurred updating the profile.", "debug": reason}), 500
@@ -448,7 +449,7 @@ def updateUserProfile(user):
     else:
         return jsonify({"type": "error", "message": "User profile not found."}), 404
     
-    return jsonify({"type": "success", "message": "Successfully updated"}), 201
+    return jsonify({"type": "error", "message": "Server error. Could not update."}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7001, debug=True)
