@@ -57,14 +57,16 @@ class Product(db.Model):
     productId = db.Column(db.Integer, primary_key=True, autoincrement=True)
     productName = db.Column(db.String(255), nullable=False)
     productDesc = db.Column(db.String(255), nullable=False)
+    productPhotoURL = db.Column(db.String(255), nullable=True)
     unitPrice = db.Column(db.Float, nullable=False)
 
-    def __init__(self, shopId, productName, productDesc, unitPrice):
+    def __init__(self, shopId, productName, productDesc, unitPrice, productPhotoURL = ""):
         self.shopId = shopId
         # self.productId = productId # no need since productId is set with autoincrement=True
         self.productName = productName
         self.productDesc = productDesc
         self.unitPrice = unitPrice
+        self.productPhotoURL = productPhotoURL
     
     def details(self):
         return {
@@ -73,6 +75,7 @@ class Product(db.Model):
             "productName": self.productName,
             "productDesc": self.productDesc,
             "unitPrice": self.unitPrice,
+            "productPhotoURL": self.productPhotoURL
         }
 
 ##########

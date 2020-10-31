@@ -25,7 +25,8 @@ CREATE TABLE `product` (
   `shopId` int(11) NOT NULL,
   `productName` varchar(255) NOT NULL,
   `productDesc` longtext NOT NULL,
-  `unitPrice` double NOT NULL
+  `unitPrice` double NOT NULL,
+  `productPhotoURL` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

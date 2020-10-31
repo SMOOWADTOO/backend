@@ -145,19 +145,21 @@ This function returns the following JSON response:
 
 ```
 {
-    "amountPaid": 13.37,
-    "iat": "Sat, 24 Oct 2020 09:26:32 GMT",
-    "paymentIntentID": "pi_1Hfj1dBuBqXcJvpBH9LV4a3b",
+    "amount": 2.14, 
+    "gst": 0.14000000000000012, 
+    "iat": "Sat, 31 Oct 2020 14:40:45 GMT", 
+    "paymentIntentID": "pi_1HiLG5BuBqXcJvpBNwLCXpMl", 
+    "pretax": 2.0, 
     "purchasedProducts": [
         {
-            "productDesc": "cake made from kopi",
-            "productId": 8,
-            "productName": "coffee cake",
-            "quantity": 5,
-            "shopId": 1,
-            "unitPrice": 2.5
+        "productDesc": "Cake made from yam", 
+        "productId": 1, 
+        "productName": "Yam Cake", 
+        "quantity": 1, 
+        "shopId": 1, 
+        "unitPrice": 2
         }
-    ],
+    ], 
     "type": "success"
 }
 ```

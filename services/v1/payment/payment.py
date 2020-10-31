@@ -69,7 +69,7 @@ def calculatePayment(api_call=True, products=""):
             "gst": final_amount - total_amount
         }), 200
     else:
-        return final_amount
+        return final_amount, total_amount, final_amount - total_amount
 
 
 @app.route('/payment/session', methods=['POST'])
@@ -106,9 +106,10 @@ def createIntent():
         if mins_elapsed_since_iat > 1:
             return jsonify({"type": "error", "message": "Payment session has expired. Please refresh the page."})
 
+        # 0 - final amount, 1 - total amount (pre tax), 2 - gst
         calculations = calculatePayment(False, payment_data["products"])
 
-        amount_cents = int(calculations * 100)
+        amount_cents = int(calculations[0] * 100)
         intent = stripe.PaymentIntent.create(
             amount = amount_cents,
             currency = "sgd",
@@ -123,7 +124,10 @@ def createIntent():
             "purchasedProducts": payment_data["products"],
             "iat": iat,
             "paymentIntentID": intent["id"],
-            "amountPaid": amount_cents / 100
+            "clientSecret": intent["client_secret"],
+            "amount": amount_cents / 100,
+            "pretax": calculations[1],
+            "gst": calculations[2]
         }), 200
 
     except Exception as e:

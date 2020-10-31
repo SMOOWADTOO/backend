@@ -77,6 +77,7 @@ USER_TYPES = {
 # ====== AUTH HELPERS =======
 
 def encodeJWT(payload, time):
+    print(payload)
     expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=time)
     payload.update({"exp": expiry})
     return jwt.encode(payload, SECRET, ALGO)
@@ -288,16 +289,19 @@ def authenticate():
             db_user = UserLogin.query.filter_by(email=data['email'], password=password_hashed).first()
             
             if db_user:
+                print(db_user)
                 db_profile = UserProfile.query.filter_by(userID=db_user.id).first()
                 payload = db_user.details()
                 del payload['created']
                 del payload['updated']
 
                 profile_payload = db_profile.details()
+                
                 payload.update(profile_payload)
 
                 minimal_profile = db_profile.minimal_details()
                 minimal_profile.update(db_user.details())
+
                 del minimal_profile["userID"]
 
                 access_jwt = encodeJWT(payload, TIME_LIMIT).decode('utf-8')
@@ -339,12 +343,15 @@ class UserProfile(db.Model):
         self.lastName = lastName
 
     def details(self):
+        birthday = None
+        if self.birthday != None:
+            birthday = self.birthday.strftime("%Y-%m-%d")
         return {
             "userID": self.userID,
             "nric": self.nric,
             "firstName": self.firstName,
             "lastName": self.lastName,
-            "birthday": self.birthday,
+            "birthday": birthday,
             "gender": self.gender,
             # "profilePhotoURL": backendProfilePhotoURL(self.user_id, self.profilePhotoURL),
             "description": self.description, 
