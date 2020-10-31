@@ -81,7 +81,7 @@ def encodeJWT(payload, time):
     payload.update({"exp": expiry})
     return jwt.encode(payload, SECRET, ALGO)
 
-def check_auth_header(f):
+def checkAuthHeader(f):
     @wraps(f)
     def _verify(*args, **kwargs):
         auth_headers = request.headers.get("Authorization", "").split()
@@ -112,11 +112,12 @@ def check_auth_header(f):
 
             return f(user, *args, **kwargs)
 
-        except jwt.ExpiredSignatureError:
+        except (jwt.ExpiredSignatureError, Exception) as e:
+            expired_msg["debug"] = str(e)
             return jsonify(expired_msg), 401 # 401 is Unauthorized HTTP status code
 
         except (jwt.InvalidTokenError, Exception) as e:
-            print(e)
+            invalid_msg["debug"] = str(e)
             return jsonify(invalid_msg), 401
             
     return _verify
@@ -196,7 +197,7 @@ def checkUsernameExists(username, json=True):
 
 # Get user full details
 @app.route("/user", methods=['GET'])
-@check_auth_header
+@checkAuthHeader
 def findUserByEmail(user):
     user_details = user.details()
     return jsonify({"type": "success", "user": user_details}), 200
@@ -346,7 +347,7 @@ class UserProfile(db.Model):
             "lastName": self.lastName,
             "birthday": self.birthday,
             "gender": self.gender,
-            # "profile_photo_url": backendProfilePhotoURL(self.user_id, self.profile_photo_url),
+            # "profilePhotoURL": backendProfilePhotoURL(self.user_id, self.profilePhotoURL),
             "description": self.description, 
             "addressLine1": self.addressLine1, 
             "addressLine2": self.addressLine2, 
@@ -387,7 +388,7 @@ def createUserProfile(userID, firstName, lastName):
 
 # Get user full details
 @app.route("/user/profile/me", methods=['GET'])
-@check_auth_header
+@checkAuthHeader
 def getFullUserProfile(user):
     user_details = user.details()
     userID = user_details["id"]
@@ -406,6 +407,48 @@ def findProfileByUserID(userID):
     if user:
         return jsonify({"type": "success", "user_profile": user.details()}), 200
     return jsonify({"type": "error", "message": "User profile not found."}), 404
+
+# update UserProfile by ID
+# used by Account Settings page
+@app.route("/user/profile", methods=['PUT'])
+@checkAuthHeader
+def updateUserProfile(user):
+    user_details = user.details()
+    userID = user_details["id"]
+    
+    user = UserProfile.query.filter_by(userID=userID).first()
+    if user:
+        data = request.get_json()
+        
+        ts = time.gmtime()
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', ts)
+        data.update({"updated": timestamp})
+        
+        for key in data:
+            if key == "birthday":
+                data[key] = datetime.datetime.strptime(data[key], "%Y-%m-%dT%H:%M:%S.%fZ")
+            
+            # profile photo
+            # if key == "profilePhotoFile":
+            #     if data["profilePhotoFile"] != "":
+            #         old_photo = user.profilePhotoURL
+            #         if old_photo == None:
+            #             old_photo = ""
+            #         filename = uploadProfilePhoto(data[key], user_id, old_photo)
+            #         setattr(user, "profilePhotoURL", filename)
+            # else:
+            #     setattr(user, key, data[key])
+        
+        try:
+            db.session.commit()
+        except Exception as e:
+            reason = str(e)
+            return jsonify({"type": "error", "message": "An error occurred updating the profile.", "debug": reason}), 500
+
+    else:
+        return jsonify({"type": "error", "message": "User profile not found."}), 404
+    
+    return jsonify({"type": "success", "message": "Successfully updated"}), 201
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7001, debug=True)
