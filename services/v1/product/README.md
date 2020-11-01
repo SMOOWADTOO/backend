@@ -137,4 +137,38 @@ This function returns the following JSON response:
     "type": "success"
 }
 ```
-Note: productId is auto-incremented
+> Note: productId is auto-incremented
+
+## 1.4 Edit a product
+
+**Edit an existing product**
+
+**URL** `/product/edit`
+
+**Method** `POST`
+
+Request sample:
+
+{
+    "productDesc": "Cake made from yam you've got the yummy yum yum",
+    "productId": 1,
+    "productName": "Yam cake lah!",
+    "unitPrice": 3.5
+}
+```
+This function returns the following JSON response:
+
+```
+{
+    "message": "Successfully updated your product!",
+    "product": {
+        "productDesc": "Cake made from yam you've got the yummy yum yum",
+        "productId": 1,
+        "productName": "Yam cake lah!",
+        "productPhotoURL": null,
+        "shopId": 1,
+        "unitPrice": 3.5
+    },
+    "type": "success"
+}
+```

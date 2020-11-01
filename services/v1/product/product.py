@@ -153,6 +153,36 @@ def addProduct():
             "debug": str(e)}
         ), 500
 
+# Add product
+@app.route("/product/edit", methods=["POST"])
+def editProduct():
+    try:
+        product_obj = request.get_json()
+        product_id = product_obj["productId"]
+
+        product = Product.query.filter_by(productId=product_id).first()
+
+        ts = time.gmtime()
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S', ts)
+
+        if product:
+            for k,v in product_obj.items():
+                setattr(product, k, v)
+
+            db.session.commit()
+        else:
+            return jsonify({"type": "error", "message": "Product not found."}), 404
+        return jsonify({"type": "success", "product": product.details(), "message": "Successfully updated your product!"}), 200
+    
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred when editing the product.", 
+            "debug": str(e)}
+        ), 500
+
 
 
 # ======================================================================
