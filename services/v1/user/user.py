@@ -9,6 +9,7 @@ import hashlib, base64, time, datetime, jwt, json, uuid, os, boto3
 from mimetypes import guess_extension
 from urllib.request import urlretrieve, urlcleanup
 from functools import wraps
+from botocore.exceptions import ClientError, NoCredentialsError
 
 app = Flask(__name__)
 app.secret_key = os.environ["USER_SVC_SECRET_KEY"]
@@ -31,9 +32,11 @@ CORS(app)
 
 # ======= AWS SETUP =======
 
-AWS_S3_CLIENT = boto3.client("s3")
-AWS_S3_RESOURCE = boto3.resource("s3")
-BUCKET_NAME = ""
+BUCKET_NAME = os.environ["S3_BUCKET_URL"]
+AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"]
+AWS_SECRET_KEY = os.environ["AWS_SECRET_KEY"]
+
+S3_CLIENT = boto3.client("s3", aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
 
 # ======= AWS SETUP =======
 
@@ -344,8 +347,13 @@ class UserProfile(db.Model):
 
     def details(self):
         birthday = None
+        profilePhoto = None
         if self.birthday != None:
             birthday = self.birthday.strftime("%Y-%m-%d")
+
+        if self.profilePhotoURL != None:
+            profilePhoto = "https://s3.ap-southeast-1.amazonaws.com/casafair/" + self.profilePhotoURL
+            
         return {
             "userID": self.userID,
             "nric": self.nric,
@@ -353,7 +361,7 @@ class UserProfile(db.Model):
             "lastName": self.lastName,
             "birthday": birthday,
             "gender": self.gender,
-            # "profilePhotoURL": backendProfilePhotoURL(self.user_id, self.profilePhotoURL),
+            "profilePhotoURL": profilePhoto,
             "description": self.description, 
             "addressLine1": self.addressLine1, 
             "addressLine2": self.addressLine2, 
@@ -436,13 +444,10 @@ def updateUserProfile(user):
                 data[key] = datetime.datetime.strptime(data[key], "%Y-%m-%dT%H:%M:%S.%fZ")
             
             #profile photo
-            # if key == "profilePhotoFile":
-            #     if data["profilePhotoFile"] != "":
-            #         old_photo = user.profilePhotoURL
-            #         if old_photo == None:
-            #             old_photo = ""
-            #         # filename = uploadProfilePhoto(data[key], user_id, old_photo)
-            #         setattr(user, "profilePhotoURL", filename)
+            if key == "profilePhotoFile":
+                if data["profilePhotoFile"] != "":
+                    filename = uploadProfilePhoto(data[key], userID)
+                    setattr(user, "profilePhotoURL", filename)
             # else:
             setattr(user, key, data[key])
         
@@ -457,6 +462,31 @@ def updateUserProfile(user):
         return jsonify({"type": "error", "message": "User profile not found."}), 404
     
     return jsonify({"type": "error", "message": "Server error. Could not update."}), 500
+
+def uploadProfilePhoto(profile_photo_file, user_id):
+    try:
+        s3_image_name = "user/" + str(user_id) + "/"
+
+        file_name, headers = urlretrieve(profile_photo_file)
+
+        extension = guess_extension(headers.get_content_type())
+
+        name_hashed = uuid.uuid4().hex + extension
+        s3_image_name += name_hashed
+
+        content_type = {}
+
+        if extension == ".jpg":
+            content_type = {"ContentType": "image/jpeg"}
+            b64_image = profile_photo_file.replace("data:image/jpeg;base64,", "")
+        elif extension == ".png":
+            content_type = {"ContentType": "image/png"}
+            b64_image = profile_photo_file.replace("data:image/png;base64,", "")
+
+        S3_CLIENT.put_object(Body=base64.b64decode(b64_image), Bucket=BUCKET_NAME, Key=s3_image_name, ContentEncoding="base64", ContentType=content_type["ContentType"])
+        return s3_image_name
+    except Exception as e:
+        raise
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7001, debug=True)
