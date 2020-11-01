@@ -126,7 +126,7 @@ def createIntent():
             "paymentIntentID": intent["id"],
             "clientSecret": intent["client_secret"],
             "amount": amount_cents / 100,
-            "pretax": calculations[1],
+            "pretax": round(calculations[1], 2),
             "gst": calculations[2]
         }), 200
 
