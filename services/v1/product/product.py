@@ -4,8 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
 from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER
-import base64, time, datetime, json, os
+import base64, time, datetime, json, os, boto3, uuid
 import traceback
+from mimetypes import guess_extension
+from urllib.request import urlretrieve, urlcleanup
+from botocore.exceptions import ClientError, NoCredentialsError
 
 app = Flask(__name__)
 
@@ -21,6 +24,16 @@ db = SQLAlchemy(app)
 CORS(app)
 
 # ======================================================================
+
+# ======= AWS SETUP =======
+
+BUCKET_NAME = os.environ["S3_BUCKET_URL"]
+AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"]
+AWS_SECRET_KEY = os.environ["AWS_SECRET_KEY"]
+
+S3_CLIENT = boto3.client("s3", aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
+
+# ======= AWS SETUP =======
 
 # ====== API SETUP ======
 
@@ -69,13 +82,16 @@ class Product(db.Model):
         self.productPhotoURL = productPhotoURL
     
     def details(self):
+        productPhoto = None
+        if self.productPhotoURL != None:
+            productPhoto = "https://s3.ap-southeast-1.amazonaws.com/casafair/" + self.productPhotoURL
         return {
             "shopId": self.shopId,
             "productId": self.productId,
             "productName": self.productName,
             "productDesc": self.productDesc,
             "unitPrice": self.unitPrice,
-            "productPhotoURL": self.productPhotoURL
+            "productPhotoURL": productPhoto
         }
 
 ##########
@@ -138,10 +154,25 @@ def addProduct():
         productName = product_obj["productName"]
         productDesc = product_obj["productDesc"]
         unitPrice = product_obj["unitPrice"]
+
+        productPhoto = product_obj["productPhotoFile"]
         
         new_product = Product(shopId, productName, productDesc, unitPrice)
         db.session.add(new_product)
         db.session.commit()
+
+        # add new photo
+
+        product = new_product.details()
+
+        product_id = product["productId"]
+        product = Product.query.filter_by(productId=product_id).first()
+
+        filename = uploadProductPhoto(productPhoto, product_id)
+        
+        setattr(product, "productPhotoURL", filename)
+        db.session.commit()
+        
         return jsonify({"type": "success", "product": new_product.details()}), 201
     
     except Exception as e:
@@ -167,6 +198,12 @@ def editProduct():
 
         if product:
             for k,v in product_obj.items():
+                # product photo
+                if k == "productPhotoFile":
+                    if v != "":
+                        filename = uploadProductPhoto(v, product_id)
+                        setattr(product, "productPhotoURL", filename)
+                
                 setattr(product, k, v)
 
             db.session.commit()
@@ -183,7 +220,30 @@ def editProduct():
             "debug": str(e)}
         ), 500
 
+def uploadProductPhoto(product_photo_file, product_id):
+    try:
+        s3_image_name = "product/" + str(product_id) + "/"
 
+        file_name, headers = urlretrieve(product_photo_file)
+
+        extension = guess_extension(headers.get_content_type())
+
+        name_hashed = uuid.uuid4().hex + extension
+        s3_image_name += name_hashed
+
+        content_type = {}
+
+        if extension == ".jpg":
+            content_type = {"ContentType": "image/jpeg"}
+            b64_image = product_photo_file.replace("data:image/jpeg;base64,", "")
+        elif extension == ".png":
+            content_type = {"ContentType": "image/png"}
+            b64_image = product_photo_file.replace("data:image/png;base64,", "")
+
+        S3_CLIENT.put_object(Body=base64.b64decode(b64_image), Bucket=BUCKET_NAME, Key=s3_image_name, ContentEncoding="base64", ContentType=content_type["ContentType"])
+        return s3_image_name
+    except Exception as e:
+        raise
 
 # ======================================================================
 

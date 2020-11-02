@@ -4,3 +4,4 @@ Flask-SQLAlchemy==2.4.1
 requests==2.23.0
 Flask-Limiter==1.4
 mysql-connector-python==8.0.18
+boto3==1.14.59
