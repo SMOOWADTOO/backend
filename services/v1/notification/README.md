@@ -1,19 +1,20 @@
 # PRODUCT SERVICE
-----------
 
-The user service handles everything related to products: 
+---
+
+The user service handles everything related to products:
 
 1. Get all products
 
------------
+---
 
-> Try to follow API best practices using nouns and not verbs (POST: /user for creating new users, GET: /user for getting user info). See more at https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design 
+> Try to follow API best practices using nouns and not verbs (POST: /user for creating new users, GET: /user for getting user info). See more at https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design
 
 **Port** `7007`
 
 All service calls returns the following JSON response:
 
-*Success*
+_Success_
 
 ```
 {
@@ -22,7 +23,7 @@ All service calls returns the following JSON response:
 }
 ```
 
-*Warning*
+_Warning_
 
 ```
 {
@@ -31,7 +32,7 @@ All service calls returns the following JSON response:
 }
 ```
 
-*Error*
+_Error_
 
 ```
 {
@@ -42,7 +43,6 @@ All service calls returns the following JSON response:
 ```
 
 > **NOTE: Boolean values accept 0 as false, and non-zero for true when inserting into the database**
-
 
 # Notification
 
@@ -59,6 +59,7 @@ Request sample:
 ```
 http://localhost:7007/notification/email
 ```
+
 ```
 
 {
@@ -81,10 +82,12 @@ http://localhost:7007/notification/email
 }
 
 ```
+
 This function returns the following JSON response:
 
 ```
 {
-
+    "message": "Successfully sent an email",
+    "type": "success"
 }
 ```
