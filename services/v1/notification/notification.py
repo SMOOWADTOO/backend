@@ -57,7 +57,7 @@ def send_email():
             'Messages': [
                 {
                 "From": {
-                    "Email": "noreply@casafair.org",
+                    "Email": "noreply.casafair@gmail.com",
                     "Name": "Casafair Notifications"
                 },
                 "To": [
