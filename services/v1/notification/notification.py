@@ -49,14 +49,10 @@ def send_email():
         lastName = message['lastName']
         orderId = message['orderId']
         productList = message['productList']
-
-        products = "<ul>"
-
-        for product in productList:
-            products += "<li>" + product + "</li>"
-
-        products = "</ul>"
-
+        productHTML = "<tr>"
+        for prod in productList:
+            productHTML += "<td>" + prod["itemName"] + "</td><td>" + prod["qty"] + "</td><td>" + prod["price"] +  "</td><tr>"
+    
         data = {
             'Messages': [
                 {
@@ -71,7 +67,8 @@ def send_email():
                     }
                 ],
                 "Subject": "Casafair Confirmation: Order #" + orderId,
-                "HTMLPart": "Hi there, " + firstName + ". Your Order Id is " + orderId + ". You have bought the following: <br>" + products
+                "TextPart": "Your order has been placed successfully!",
+                "HTMLPart": '<!DOCTYPE html><html lang="en"><head> <style>.center{text-align: center; margin-left: auto; margin-right: auto;}img{display: block; margin-left: auto; margin-right: auto; width: 100px;}table.orderTable{font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; border: 1px solid #80257D; text-align: center;}table.orderTable td, table.orderTable th{border: 1px solid #AAAAAA; padding: 3px 2px;}table.orderTable tbody td{font-size: 13px; color: #80257D;}table.blueTable td, table.blueTable th{border: 1px solid #AAAAAA; padding: 3px 2px;}table.blueTable tbody td{font-size: 13px; color: #80257D;}</style></head><body> <div class="center"> <img src="https://avatars0.githubusercontent.com/u/71128513?s=200&v=4" alt="CasaFair logo"> <p>Hi ' + firstName + " " + lastName + '!</p><p> Thank you for choosing CasaFair! Your Order details are indicated below. </p><p>Your Order details</p><p>Order ID:' + orderId + '</p><table class="orderTable center"> <tr> <th>Item</th> <th>Qty</th> <th>Price</th> </tr>' + productHTML + '</table> </div></body></html>'
                 
                 }
             ]
