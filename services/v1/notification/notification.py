@@ -50,11 +50,18 @@ def send_email():
         orderId = message['orderId']
         productList = message['productList']
 
+        products = "<ul>"
+
+        for product in productList:
+            products += "<li>" + product + "</li>"
+
+        products = "</ul>"
+
         data = {
             'Messages': [
                 {
                 "From": {
-                    "Email": "noreply@casafair.org",
+                    "Email": "noreply.casafair@gmail.com",
                     "Name": "Casafair Notifications"
                 },
                 "To": [
@@ -64,8 +71,7 @@ def send_email():
                     }
                 ],
                 "Subject": "Casafair Confirmation: Order #" + orderId,
-                "TextPart": "My first Mailjet email",
-                "HTMLPart": "Hi there, " + firstName + ". Your Order Id is " + orderId + ". You have bought " + productList
+                "HTMLPart": "Hi there, " + firstName + ". Your Order Id is " + orderId + ". You have bought the following: <br>" + products
                 
                 }
             ]
