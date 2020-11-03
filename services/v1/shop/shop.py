@@ -149,6 +149,29 @@ def getShopByShopId(shopId):
             "debug": str(e)}
         ), 500
 
+# Get shop details of shops for a specified user
+@app.route("/shop/user/<string:username>", methods=['GET'])
+def getShopByUser(username):
+    try:
+        # data = Product.query.filter_by(shopId=shopId)
+        shop = Shop.query.filter_by(username=username)
+        if shop:
+            return {
+                "shops": [s.details() for s in shop],
+                'type': 'success'
+            }, 200
+        return {
+            "type": "error",
+            "message": "No shops exist for user with username " + username
+        }, 404
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred when getting all shops.", 
+            "debug": str(e)}
+        ), 500
+
 # Create new shop
 @app.route("/shop/create", methods=["POST"])
 def createShop():

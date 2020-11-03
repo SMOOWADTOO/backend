@@ -181,18 +181,19 @@ def getOrderByUser(username):
     result = {}
     result['orders'] = []
     try:
-        order = Order.query.filter_by(username=username).first()
-        if order:
-            data = order.details()
-            orderDetails = OrderDetails.query.filter_by(orderId=order.orderId)
-            od = []
-            total = 0
-            for orderDetail in orderDetails:
-                total += orderDetail.total
-                od.append(orderDetail.details())
-            data['order_details'] = od
-            data['total'] = total
-            result['orders'].append(data)
+        orders = Order.query.filter_by(username=username)
+        if orders:
+            for order in orders:
+                data = order.details()
+                orderDetails = OrderDetails.query.filter_by(orderId=order.orderId)
+                od = []
+                total = 0
+                for orderDetail in orderDetails:
+                    total += orderDetail.total
+                    od.append(orderDetail.details())
+                data['order_details'] = od
+                data['total'] = total
+                result['orders'].append(data)
             result['type'] = 'success'
             return result, 200
         return {
