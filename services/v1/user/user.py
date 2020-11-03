@@ -45,7 +45,7 @@ S3_CLIENT = boto3.client("s3", aws_access_key_id=AWS_ACCESS_KEY, aws_secret_acce
 # ====== API SETUP ======
 
 # Rate limiter to prevent abuse and runaway Cloud usage; per IP Address
-limiter = Limiter(app, key_func=get_ipaddr, default_limits=["10 per minute", "100 per hour", "300 per day"])
+limiter = Limiter(app, key_func=get_ipaddr, default_limits=["100 per minute", "500 per hour", "1000 per day"])
 
 # Default error handling messages
 @app.errorhandler(404)
