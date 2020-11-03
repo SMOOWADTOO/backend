@@ -4,8 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address, get_ipaddr
 from sqlalchemy.dialects.mysql import VARCHAR, BIGINT, TIMESTAMP, TINYINT, LONGTEXT, DATE, DATETIME, INTEGER
-import base64, time, datetime, json, uuid, os
+import base64, time, datetime, json, uuid, os, boto3
 import traceback
+from mimetypes import guess_extension
+from urllib.request import urlretrieve, urlcleanup
+from botocore.exceptions import ClientError, NoCredentialsError
 
 app = Flask(__name__)
 
@@ -21,6 +24,13 @@ db = SQLAlchemy(app)
 CORS(app)
 
 # ======================================================================
+# ======= AWS SETUP =======
+
+BUCKET_NAME = os.environ["S3_BUCKET_URL"]
+AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"]
+AWS_SECRET_KEY = os.environ["AWS_SECRET_KEY"]
+
+S3_CLIENT = boto3.client("s3", aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)# ======= AWS SETUP =======
 
 # ====== API SETUP ======
 
@@ -77,12 +87,15 @@ class Shop(db.Model):
         self.website = website
     
     def details(self):
+        profilePhoto = None
+        if self.shopImageURL != None:
+            profilePhoto = "https://s3.ap-southeast-1.amazonaws.com/casafair/" + self.shopImageURL
         return {
             "shopId": self.shopId,
             "username": self.username,
             "shopName": self.shopName,
             "shopDesc": self.shopDesc,
-            "shopImageURL": self.shopImageURL,
+            "shopImageURL": profilePhoto,
             "contactNo": self.contactNo,
             "address": self.address,
             "email": self.email,
@@ -147,7 +160,11 @@ def createShop():
         shopName = shop_obj.get("shopName")
         if shopName is None:
             return jsonify({"type": "error", "message": "shopName is required"}), 500
-        
+        shopImageURL = shop_obj.get("shopImageFile")
+        if shopImageURL:
+            filename = uploadShopPhoto(shopImageURL, shopName)
+            del shop_obj['shopImageFile']
+            shop_obj['shopImageURL'] = filename
         new_shop = Shop(**shop_obj)
         db.session.add(new_shop)
         db.session.commit()
@@ -198,6 +215,31 @@ def editShop():
             "message": "An error occurred when editing shop",
             "debug": str(e)}
         ), 500
+
+def uploadShopPhoto(shop_photo_file, shop_name):
+    try:
+        s3_image_name = "user/" + str(shop_name) + "/"
+
+        file_name, headers = urlretrieve(shop_photo_file)
+
+        extension = guess_extension(headers.get_content_type())
+
+        name_hashed = uuid.uuid4().hex + extension
+        s3_image_name += name_hashed
+
+        content_type = {}
+
+        if extension == ".jpg":
+            content_type = {"ContentType": "image/jpeg"}
+            b64_image = shop_photo_file.replace("data:image/jpeg;base64,", "")
+        elif extension == ".png":
+            content_type = {"ContentType": "image/png"}
+            b64_image = shop_photo_file.replace("data:image/png;base64,", "")
+
+        S3_CLIENT.put_object(Body=base64.b64decode(b64_image), Bucket=BUCKET_NAME, Key=s3_image_name, ContentEncoding="base64", ContentType=content_type["ContentType"])
+        return s3_image_name
+    except Exception as e:
+        raise
 
 # ======================================================================
 
