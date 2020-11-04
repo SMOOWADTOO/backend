@@ -84,6 +84,47 @@ def send_email():
             "debug": str(e)}
         ), 500
 
+
+@app.route("/notification/contact-us", methods=["POST"])
+def send_query_email_from_customer():
+    message = request.get_json()
+    try:
+        email = message['email']
+        name = message['name']
+        subject = message['subject']
+        description = message['description']
+        
+        data = {
+            'Messages': [
+                {
+                "From": {
+                    "Email": email,
+                    "Name": name
+                },
+                "To": [
+                    {
+                    "Email": "noreply.casafair@gmail.com",
+                    "Name": "Casafair Notifications"
+                    }
+                ],
+                "Subject": subject,
+                "TextPart": "Customer " + name + " contact us on " + subject + ". " + description,
+                "HTMLPart": ""
+                
+                }
+            ]
+        }
+        result = MAILJET.send.create(data=data)
+        return jsonify({"type": "success", "message": "Successfully sent an email"}), 200
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred sending the notification.",
+            "debug": str(e)}
+        ), 500
+
 # ======================================================================
 
 if __name__ == '__main__':

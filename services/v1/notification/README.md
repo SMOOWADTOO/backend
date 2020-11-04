@@ -91,3 +91,38 @@ This function returns the following JSON response:
     "type": "success"
 }
 ```
+
+
+## 1.2 Email from customer via Contact Us
+
+**Email from customer via Contact Us**
+
+**URL** `/notification/contact-us`
+
+**Method** `POST`
+
+Request sample:
+
+```
+http://localhost:7007/notification/contact-us
+```
+
+```
+
+{
+    "email": "ptvvo.2018@sis.smu.edu.sg",
+    "name": "Vi Vo",
+    "subject": "Suggestion of new feature",
+    "description": "To whom may I concern, I would like to suggest a new feature on CasaFair app....."
+}
+
+```
+
+This function returns the following JSON response:
+
+```
+{
+    "message": "Successfully sent an email",
+    "type": "success"
+}
+```
