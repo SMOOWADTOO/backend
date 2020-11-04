@@ -88,7 +88,7 @@ class Shop(db.Model):
     
     def details(self):
         profilePhoto = None
-        if self.shopImageURL != None:
+        if self.shopImageURL:
             profilePhoto = "https://s3.ap-southeast-1.amazonaws.com/casafair/" + self.shopImageURL
         return {
             "shopId": self.shopId,
@@ -185,10 +185,12 @@ def createShop():
             return jsonify({"type": "error", "message": "shopName is required"}), 500
         shopImageURL = shop_obj.get("shopImageFile")
         if shopImageURL:
+            # return {'a': shopImageURL}, 200
             filename = uploadShopPhoto(shopImageURL, shopName)
-            del shop_obj['shopImageFile']
             shop_obj['shopImageURL'] = filename
+        del shop_obj['shopImageFile']
         new_shop = Shop(**shop_obj)
+        # return new_shop.details(), 200
         db.session.add(new_shop)
         db.session.commit()
         return jsonify({"type": "success", "shop": new_shop.details()}), 201
