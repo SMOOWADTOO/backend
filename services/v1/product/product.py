@@ -122,6 +122,8 @@ def getProductsByShopId(shopId):
         products = Product.query.filter_by(shopId=shopId)
         if len(products.all()) != 0:
             return jsonify({"products": [product.details() for product in products], "type": "success"}), 200
+        else:
+            return jsonify({"products": [], "type": "success"}), 200
     except Exception as e:
         print(e)
         return jsonify(
