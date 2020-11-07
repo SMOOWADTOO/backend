@@ -23,6 +23,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `review` (
   `reviewId` int(11) NOT NULL,
   `shopId` int(11) NOT NULL,
+  `orderId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `reviewDetail` longtext NOT NULL,
@@ -34,11 +36,11 @@ CREATE TABLE `review` (
 -- Dumping data for table `review`
 --
 
-INSERT INTO `review` (`reviewId`, `shopId`, `username`, `title`, `reviewDetail`, `rating`, `publishedTime`) VALUES
-(1, 1, 'vivocity', 'Fabulous Cake', 'cake is yummy, thanks shop', 5, '2020-10-05 03:28:19'),
-(2, 2, 'johnny_chew', 'Best chicken rice ever', 'as title', 4, '2020-10-05 03:28:19'),
-(3, 3, 'mouthcare123', 'Tasty toothpaste', 'My mouth smells better now', 5, '2020-10-05 03:28:19'),
-(4, 3, 'vivocity', 'Good product, fast delivery', 'Ordered toothpaste and dispensers for my kids. Items were delivered next day. Good quality also', 5, '2020-10-05 03:28:19');
+INSERT INTO `review` (`reviewId`, `shopId`, `orderId`, `productId`, `username`, `title`, `reviewDetail`, `rating`, `publishedTime`) VALUES
+(1, 1, 1, 1, 'vivocity', 'Fabulous Cake', 'cake is yummy, thanks shop', 5, '2020-10-05 03:28:19'),
+(2, 2, 1, 1, 'johnny_chew', 'Best chicken rice ever', 'as title', 4, '2020-10-05 03:28:19'),
+(3, 3, 2, 2, 'mouthcare123', 'Tasty toothpaste', 'My mouth smells better now', 5, '2020-10-05 03:28:19'),
+(4, 3, 1, 1, 'vivocity', 'Good product, fast delivery', 'Ordered toothpaste and dispensers for my kids. Items were delivered next day. Good quality also', 5, '2020-10-05 03:28:19');
 
 --
 -- Indexes for dumped tables

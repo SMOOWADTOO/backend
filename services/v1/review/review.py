@@ -27,7 +27,7 @@ CORS(app)
 # ====== API SETUP ======
 
 # Rate limiter to prevent abuse and runaway Cloud usage; per IP Address
-limiter = Limiter(app, key_func=get_ipaddr, default_limits=["10 per minute", "100 per hour", "300 per day"])
+limiter = Limiter(app, key_func=get_ipaddr, default_limits=["500 per minute", "10000 per hour", "1000000 per day"])
 
 # Default error handling messages
 @app.errorhandler(404)
@@ -57,6 +57,8 @@ class Review(db.Model):
 
     reviewId = db.Column(db.Integer, primary_key=True, autoincrement=True)
     shopId = db.Column(db.Integer, primary_key=True)
+    orderId = db.Column(db.Integer, primary_key=True)
+    productId = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     reviewDetail = db.Column(LONGTEXT, nullable=False)
@@ -66,8 +68,10 @@ class Review(db.Model):
     # init doesn't need to include reviewId and publishedTime
     # ---- reviewId is auto incremented
     # ---- publishedTime is CURRENT_TIMESTAMP 
-    def __init__(self, shopId, username, title, reviewDetail, rating):
+    def __init__(self, shopId, orderId, productId, username, title, reviewDetail, rating):
         self.shopId = shopId
+        self.orderId = orderId
+        self.productId = productId
         self.username = username
         self.title = title
         self.reviewDetail = reviewDetail
@@ -77,6 +81,8 @@ class Review(db.Model):
         return {
             "reviewId": self.reviewId,
             "shopId": self.shopId,
+            "orderId": self.orderId,
+            "productId": self.productId,
             "username": self.username,
             "title": self.title,
             "reviewDetail": self.reviewDetail,
@@ -88,7 +94,7 @@ class Review(db.Model):
 # METHODS
 ##########
 
-# Get all products
+# Get all reviews
 @app.route("/review", methods=['GET'])
 def getAllReviews():
     try:
@@ -111,7 +117,40 @@ def getReviewsByShopId(shopId):
     try:
         reviews = Review.query.filter_by(shopId=shopId)
         if len(reviews.all()) != 0:
-            return {"reviews": [review.details() for review in reviews], "status": 200} 
+            return {"reviews": [review.details() for review in reviews], "status": "success"}, 200
+        return {"reviews": [], "status": "success"}, 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred when getting reviews by shop ID.", 
+            "debug": str(e)}
+        ), 500
+
+# Get reviews by product id
+@app.route("/review/<string:productId>", methods=['GET'])
+def getReviewsByProductId(productId):
+    try:
+        reviews = Review.query.filter_by(productId=productId)
+        if len(reviews.all()) != 0:
+            return {"reviews": [review.details() for review in reviews], "status": "success"} 
+        return {"reviews": [], "status": "success"}, 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {"type": "error", 
+            "message": "An error occurred when getting reviews by shop ID.", 
+            "debug": str(e)}
+        ), 500
+
+# Check if order has been reviewed
+@app.route("/review/done/<string:orderId>", methods=['GET'])
+def isReviewed(orderId):
+    try:
+        reviews = Review.query.filter_by(orderId=orderId)
+        if len(reviews.all()) != 0:
+            return {"isReviewed": True, "orderId": orderId, "status": 200} 
+        return {"isReviewed": False, "orderId": orderId, "status": 200} 
     except Exception as e:
         print(e)
         return jsonify(
@@ -126,6 +165,8 @@ def addReview():
     try:
         review_obj = request.get_json()
         shopId = review_obj["shopId"]
+        orderId = review_obj["orderId"]
+        productId = review_obj["productId"]
         username = review_obj["username"]
         title = review_obj["title"]
         reviewDetail = review_obj["reviewDetail"]
@@ -133,7 +174,7 @@ def addReview():
         # publishedTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         # print(publishedTime)
 
-        new_review = Review(shopId, username, title, reviewDetail, rating)
+        new_review = Review(shopId, orderId, productId, username, title, reviewDetail, rating)
         db.session.add(new_review)
         db.session.commit()
         return jsonify({"type": "success", "review": new_review.details()}), 201
