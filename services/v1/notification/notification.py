@@ -47,11 +47,11 @@ def send_email():
         email = message['email']
         firstName = message['firstName']
         lastName = message['lastName']
-        orderId = message['orderId']
+        orderId = str(message['orderId'])
         productList = message['productList']
         productHTML = "<tr>"
         for prod in productList:
-            productHTML += "<td>" + prod["itemName"] + "</td><td>" + prod["qty"] + "</td><td>" + prod["price"] +  "</td><tr>"
+            productHTML += "<td>" + prod["itemName"] + "</td><td>" + str(prod["qty"]) + "</td><td>" + str(prod["price"]) +  "</td><tr>"
     
         data = {
             'Messages': [
