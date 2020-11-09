@@ -222,7 +222,13 @@ def editShop():
         username = shop_obj.get("username")
         if username is None:
             return jsonify({"type": "error", "message": "username is required"}), 500
-        
+
+        shopImageURL = shop_obj.get("shopImageFile")
+        if shopImageURL:
+            filename = uploadShopPhoto(shopImageURL, shop_obj.get("shopName"))
+            shop_obj['shopImageURL'] = filename
+        del shop_obj['shopImageFile']
+
         forbidden_fields = ['shopId', 'username', 'createdAt', 'updatedAt']
         for k,v in shop_obj.items():
             if k not in forbidden_fields:
