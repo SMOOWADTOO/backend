@@ -98,17 +98,17 @@ def send_query_email_from_customer():
             'Messages': [
                 {
                 "From": {
-                    "Email": email,
-                    "Name": name
+                    "Email": "noreply.casafair@gmail.com",
+                    "Name": "Notifications from Casafair"
                 },
                 "To": [
                     {
-                    "Email": "noreply.casafair@gmail.com",
-                    "Name": "Casafair Notifications"
+                        "Email": "noreply.casafair@gmail.com",
+                        "Name": "Casafair Notifications"
                     }
                 ],
                 "Subject": subject,
-                "TextPart": "Customer " + name + " has contacted us on " + subject + ". Enquery details: \n\n" + description,                
+                "TextPart": "A customer has contacted us! " + name + ", with email: " + email +  " has contacted us on " + subject + ". Enquery details: \n\n" + description,                
                 "HTMLPart": ""
                 
                 }
