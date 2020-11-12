@@ -417,9 +417,11 @@ def getFullUserProfile(user):
 # Find user profile by username
 @app.route("/user/profile/<int:userID>", methods=['GET'])
 def findProfileByUserID(userID):
-    user = UserProfile.query.filter_by(userID=userID).first()
+    user = UserProfile.query.filter_by(userID=userID).first().details()
+    login_user = UserLogin.query.filter_by(id=userID).first().details()
+    user.update(login_user)
     if user:
-        return jsonify({"type": "success", "user_profile": user.details()}), 200
+        return jsonify({"type": "success", "user_profile": user}), 200
     return jsonify({"type": "error", "message": "User profile not found."}), 404
 
 # update UserProfile by ID
