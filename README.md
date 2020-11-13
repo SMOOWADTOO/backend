@@ -33,9 +33,11 @@ Dump all the `.sql` script files to the ./sqldump folder
 
 **7007** `notification`: [https://www.casafair.org/api/notification](https://www.casafair.org/api/notification)
 
+**7008** `general`: [https://www.casafair.org/api/general](https://www.casafair.org/api/general)
+
 **7009** `search`: [https://www.casafair.org/api/search](https://www.casafair.org/api/search)
 
-> Let's not upload API keys into GH hahaha
+> Note for developers: Let's not upload API keys into GitHub
 
 ## Running locally
 
