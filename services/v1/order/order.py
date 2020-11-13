@@ -131,10 +131,14 @@ def getAllOrders():
             for orderDetail in orderDetails:
                 total += orderDetail.total
                 od.append(orderDetail.details())
+            # Sort orderDetails
+            od.sort(key=lambda x: x['createdAt'], reverse=True)
             data['order_details'] = od
             data['total'] = total
             result['orders'].append(data)
         result['type'] = "success"
+        # Sort orders array
+        result['orders'].sort(key=lambda x: x['createdAt'], reverse=True)
         return result, 200
     except Exception as e:
         print(e)
@@ -158,6 +162,8 @@ def getOrderByOrderId(orderId):
             for orderDetail in orderDetails:
                 total += orderDetail.total
                 od.append(orderDetail.details())
+            # Sort orderDetails
+            od.sort(key=lambda x: x['createdAt'], reverse=True)
             data['order_details'] = od
             data['total'] = total
             result['order'] = data
@@ -191,10 +197,14 @@ def getOrderByUser(username):
                 for orderDetail in orderDetails:
                     total += orderDetail.total
                     od.append(orderDetail.details())
+                # Sort orderDetails
+                od.sort(key=lambda x: x['createdAt'], reverse=True)
                 data['order_details'] = od
                 data['total'] = total
                 result['orders'].append(data)
             result['type'] = 'success'
+            # Sort orders array
+            result['orders'].sort(key=lambda x: x['createdAt'], reverse=True)
             return result, 200
         return {
             "type": "error",
