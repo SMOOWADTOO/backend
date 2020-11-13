@@ -4,6 +4,9 @@
 The user service handles everything related to products: 
 
 1. Get all products
+2. Get Products By Shop ID
+3. Add new product
+4. Edit a product
 
 -----------
 
@@ -148,7 +151,7 @@ This function returns the following JSON response:
 **Method** `POST`
 
 Request sample:
-
+```
 {
     "productDesc": "Cake made from yam you've got the yummy yum yum",
     "productId": 1,
