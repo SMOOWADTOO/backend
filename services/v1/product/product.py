@@ -83,8 +83,9 @@ class Product(db.Model):
     
     def details(self):
         productPhoto = None
-        if self.productPhotoURL != None:
+        if self.productPhotoURL != None and self.productPhotoURL != "":
             productPhoto = "https://s3.ap-southeast-1.amazonaws.com/casafair/" + self.productPhotoURL
+
         return {
             "shopId": self.shopId,
             "productId": self.productId,
@@ -161,11 +162,9 @@ def addProduct():
         
         new_product = Product(shopId, productName, productDesc, unitPrice)
         db.session.add(new_product)
-        db.session.commit()
 
         # add new photo
         if productPhoto != "":
-
             product = new_product.details()
 
             product_id = product["productId"]
@@ -174,6 +173,9 @@ def addProduct():
             filename = uploadProductPhoto(productPhoto, product_id)
             
             setattr(product, "productPhotoURL", filename)
+            db.session.commit()
+
+        else:
             db.session.commit()
         
         return jsonify({"type": "success", "product": new_product.details()}), 201
