@@ -108,7 +108,7 @@ def send_query_email_from_customer():
                     }
                 ],
                 "Subject": subject,
-                "TextPart": "A customer has contacted us! " + name + ", with email: " + email +  " has contacted us on " + subject + ". Enquery details: \n\n" + description,                
+                "TextPart": "A customer has contacted us!\n Customer named " + name + ", with email: " + email +  " has contacted us about '" + subject + "'.\n Enquiry details: \n\n" + description,                
                 "HTMLPart": ""
                 
                 }
