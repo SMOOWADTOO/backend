@@ -164,16 +164,17 @@ def addProduct():
         db.session.commit()
 
         # add new photo
+        if productPhoto != "":
 
-        product = new_product.details()
+            product = new_product.details()
 
-        product_id = product["productId"]
-        product = Product.query.filter_by(productId=product_id).first()
+            product_id = product["productId"]
+            product = Product.query.filter_by(productId=product_id).first()
 
-        filename = uploadProductPhoto(productPhoto, product_id)
-        
-        setattr(product, "productPhotoURL", filename)
-        db.session.commit()
+            filename = uploadProductPhoto(productPhoto, product_id)
+            
+            setattr(product, "productPhotoURL", filename)
+            db.session.commit()
         
         return jsonify({"type": "success", "product": new_product.details()}), 201
     
