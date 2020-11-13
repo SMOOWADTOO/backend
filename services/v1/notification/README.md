@@ -1,10 +1,11 @@
-# PRODUCT SERVICE
+# NOTIFICATION SERVICE
 
 ---
 
-The user service handles everything related to products:
+The user service handles everything related to notification:
 
-1. Get all products
+1. Email notification for Order successful
+2. Email from customer via Contact Us
 
 ---
 
@@ -46,7 +47,7 @@ _Error_
 
 # Notification
 
-## 1.1 Email notification for Order successful
+## 1. Email notification for Order successful
 
 **Email notification for Order successful**
 
@@ -93,7 +94,7 @@ This function returns the following JSON response:
 ```
 
 
-## 1.2 Email from customer via Contact Us
+## 2. Email from customer via Contact Us
 
 **Email from customer via Contact Us**
 
