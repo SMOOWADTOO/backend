@@ -5,6 +5,8 @@
 The user service handles everything related to products:
 
 1. Get all reviews
+2. Get Reviews by Shop ID
+3. Add new review
 
 ---
 
@@ -44,9 +46,9 @@ _Error_
 
 > **NOTE: Boolean values accept 0 as false, and non-zero for true when inserting into the database**
 
-# Revidw
+# Review
 
-## 1.1 Get All Revidews
+## 1.1 Get All Reviews
 
 **Get list of all reviews**
 
@@ -164,4 +166,4 @@ This function returns the following JSON response:
 }
 ```
 
-Note: reviewId is auto-incremented, publishedTime is current timestamp when adding to database
+> Note: reviewId is auto-incremented, publishedTime is current timestamp when adding to database
