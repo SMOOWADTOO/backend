@@ -67,7 +67,25 @@ This function returns the following JSON response:
 
 ```
 {
-
+    "products": [
+        {
+            "productDesc": "Cake made from yam yum yum ah it's nice",
+            "productId": 1,
+            "productName": "Yam cake",
+            "productPhotoURL": "https://s3.ap-southeast-1.amazonaws.com/casafair/product/1/cdd3cdf1189e4672b48b229769e8da9c.jpg",
+            "shopId": 1,
+            "unitPrice": 3
+        },
+        {
+            "productDesc": "Cake made from pandan leaf",
+            "productId": 2,
+            "productName": "Pandan Cake",
+            "productPhotoURL": "https://s3.ap-southeast-1.amazonaws.com/casafair/product/2/fc84b45d287f426290ceb29246735e30.jpg",
+            "shopId": 1,
+            "unitPrice": 3
+        },
+        ...
+    ]
 }
 ```
 
