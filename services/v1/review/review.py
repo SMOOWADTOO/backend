@@ -97,11 +97,11 @@ class Review(db.Model):
 # Get all reviews
 @app.route("/review", methods=['GET'])
 def getAllReviews():
+    reviews = [review.details() for review in Review.query.all()]
+    result = sorted(reviews, key=lambda x: x['publishedTime'], reverse=True)
     try:
         return {
-            'reviews': [
-                review.details() for review in Review.query.all()
-            ]
+            'reviews': result
         }, 200
     except Exception as e:
         print(e)
@@ -116,8 +116,10 @@ def getAllReviews():
 def getReviewsByShopId(shopId):
     try:
         reviews = Review.query.filter_by(shopId=shopId)
+        result = [review.details() for review in reviews]
+        result = sorted(result, key=lambda x: x['publishedTime'], reverse=True)
         if len(reviews.all()) != 0:
-            return {"reviews": [review.details() for review in reviews], "status": "success"}, 200
+            return {"reviews": result, "status": "success"}, 200
         return {"reviews": [], "status": "success"}, 200
     except Exception as e:
         print(e)
@@ -128,12 +130,14 @@ def getReviewsByShopId(shopId):
         ), 500
 
 # Get reviews by product id
-@app.route("/review/<string:productId>", methods=['GET'])
+@app.route("/review/product/<string:productId>", methods=['GET'])
 def getReviewsByProductId(productId):
     try:
         reviews = Review.query.filter_by(productId=productId)
+        result = [review.details() for review in reviews]
+        result = sorted(result, key=lambda x: x['publishedTime'], reverse=True)
         if len(reviews.all()) != 0:
-            return {"reviews": [review.details() for review in reviews], "status": "success"} 
+            return {"reviews": result, "status": "success"} 
         return {"reviews": [], "status": "success"}, 200
     except Exception as e:
         print(e)
