@@ -1,8 +1,8 @@
-# PRODUCT SERVICE
+# REVIEW SERVICE
 
 ---
 
-The user service handles everything related to products:
+The review service handles everything related to reviews:
 
 1. Get all reviews
 2. Get Reviews by Shop ID
