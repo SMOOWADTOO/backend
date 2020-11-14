@@ -165,6 +165,7 @@ def addProduct():
 
         # add new photo
         if productPhoto != "":
+            db.session.commit()
             product = new_product.details()
 
             product_id = product["productId"]
